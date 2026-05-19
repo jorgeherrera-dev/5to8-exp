@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CBLT: Enseñanza Basada en Competencias</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Distorsiones Cognitivas · Falacia de Cambio y Etiquetas Globales</title>
     <style>
         * {
             margin: 0;
@@ -13,1124 +12,1200 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        :root {
+            --primary: #ff6b4a;
+            --secondary: #2c3e66;
+            --accent: #7c8ee6;
+            --dark: #121826;
+            --light: #f4f6ff;
+            --warning: #ffb347;
+            --success: #4ecdc4;
+            --danger: #ff4757;
+            --purple: #a55eea;
+        }
+
         body {
-            background: linear-gradient(135deg, #004d66 0%, #006680 50%, #0099b0 100%);
-            color: #f0f0f0;
-            min-height: 100vh;
-            padding: 20px;
+            background: linear-gradient(135deg, #0a0e1a, #1a1f2e);
+            color: var(--light);
+            overflow: hidden;
+            height: 100vh;
+            perspective: 1000px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        #scene-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* Página 1: Introducción */
-        .page {
-            display: none;
-            animation: fadeIn 0.8s ease;
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateZ(-500px) rotateY(90deg);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: none;
+            overflow-y: auto;
         }
 
-        .page.active {
-            display: block;
+        .scene.active {
+            opacity: 1;
+            transform: translateZ(0) rotateY(0);
+            pointer-events: all;
         }
 
-        header {
+        .scene::-webkit-scrollbar {
+            width: 5px;
+        }
+        .scene::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .scene::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .scene-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
             text-align: center;
-            padding: 30px 20px;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 204, 0, 0.3);
-        }
-
-        header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ffcc00, #ffaa00);
+            background: linear-gradient(90deg, var(--primary), var(--warning));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
+            text-shadow: 0 5px 15px rgba(255, 107, 74, 0.3);
+            letter-spacing: 1px;
         }
 
-        .subtitle {
-            font-size: 1.3rem;
-            opacity: 0.9;
-            font-style: italic;
-            color: #ffd93d;
-        }
-
-        /* Introducción */
-        .intro-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            align-items: center;
-            margin-bottom: 50px;
-        }
-
-        .intro-image {
-            flex: 1;
-            min-width: 300px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            border: 3px solid #ffcc00;
-        }
-
-        .intro-image img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .intro-image:hover img {
-            transform: scale(1.05);
-        }
-
-        .intro-text {
-            flex: 1;
-            min-width: 300px;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            border-left: 5px solid #ffcc00;
-        }
-
-        .intro-text h2 {
-            color: #ffcc00;
-            margin-bottom: 20px;
-            font-size: 2rem;
-        }
-
-        .intro-text p {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            margin-bottom: 20px;
-        }
-
-        .key-facts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .fact {
-            background: rgba(255, 204, 0, 0.15);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid rgba(255, 204, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .fact:hover {
-            transform: translateY(-5px);
-        }
-
-        .fact i {
-            font-size: 2rem;
-            color: #ffcc00;
-            margin-bottom: 10px;
-        }
-
-        .fact h3 {
-            color: #ffd93d;
-            margin-bottom: 10px;
-        }
-
-        /* Página 2: Características Principales */
-        .features-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .feature-card {
-            width: 280px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 204, 0, 0.15);
-            box-shadow: 0 15px 30px rgba(255, 204, 0, 0.3);
-            border-color: #ffcc00;
-        }
-
-        .feature-number {
+        .theme-badge {
             display: inline-block;
-            background: linear-gradient(90deg, #ffcc00, #ffaa00);
-            color: #004d66;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .feature-name {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #ffcc00;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .feature-icon {
-            font-size: 3.5rem;
-            margin: 20px 0;
-            color: #ffcc00;
-        }
-
-        .click-info {
+            padding: 0.5rem 2rem;
+            border-radius: 30px;
             font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 15px;
-            font-style: italic;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
         }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            animation: fadeIn 0.3s;
+        .badge-cambio {
+            background: rgba(255, 107, 74, 0.2);
+            border: 2px solid var(--primary);
+            color: var(--primary);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .badge-etiquetas {
+            background: rgba(124, 142, 230, 0.2);
+            border: 2px solid var(--accent);
+            color: var(--accent);
         }
 
-        .modal-content {
-            background: linear-gradient(135deg, #004d66, #006680);
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 20px;
+        .section-divider {
             width: 90%;
-            max-width: 700px;
-            border: 2px solid #ffcc00;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            max-width: 1200px;
+            text-align: center;
+            margin: 1rem auto;
             position: relative;
-            animation: slideUp 0.4s;
+            padding: 2rem 0;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .close {
+        .divider-line {
             position: absolute;
-            right: 25px;
-            top: 15px;
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.3s;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), var(--purple), transparent);
+            transform: translateY(-50%);
         }
 
-        .close:hover {
-            color: #ffcc00;
-        }
-
-        #modalTitle {
-            color: #ffcc00;
-            margin-bottom: 5px;
-            font-size: 2.2rem;
-        }
-
-        #modalInfo {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .modal-image {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #modalImg {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 204, 0, 0.5);
-        }
-
-        /* Sección de Juego/Actividad */
-        .game-section {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
-            margin-top: 40px;
-            border: 2px solid #ffcc00;
-            text-align: center;
-        }
-
-        .game-title {
-            color: #ffcc00;
-            font-size: 2rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .game-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            justify-content: center;
-        }
-
-        .competency-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            width: 250px;
-            color: #004d66;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 3px solid transparent;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .competency-card:hover {
-            transform: scale(1.05);
-            border-color: #ffcc00;
-        }
-
-        .competency-card.selected {
-            border-color: #ffcc00;
-            background: #fff3cd;
-        }
-
-        .competency-card.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .competency-icon {
-            font-size: 2.5rem;
-            color: #006680;
-            margin-bottom: 15px;
-        }
-
-        .competency-text {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .competency-desc {
-            font-size: 0.9rem;
-            color: #333;
-        }
-
-        .situation-box {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            flex: 1;
-            min-width: 300px;
-            border-left: 5px solid #ffcc00;
-        }
-
-        .situation-title {
-            color: #ffcc00;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        .situation-text {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            font-style: italic;
-        }
-
-        .feedback {
-            font-size: 1.2rem;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            min-height: 80px;
-        }
-
-        .feedback.correct {
-            background: rgba(76, 175, 80, 0.3);
-            border-left: 5px solid #4caf50;
-        }
-
-        .feedback.incorrect {
-            background: rgba(244, 67, 54, 0.3);
-            border-left: 5px solid #f44336;
-        }
-
-        .game-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-        }
-
-        .stat-box {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-        }
-
-        .stat-box span {
-            color: #ffcc00;
-            font-weight: bold;
-            font-size: 1.5rem;
-            margin-right: 5px;
-        }
-
-        .game-btn {
-            background: linear-gradient(135deg, #ffcc00, #ffaa00);
-            color: #004d66;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .game-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
-        }
-
-        .game-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .difficulty-badge {
-            background: #ffcc00;
-            color: #004d66;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
+        .divider-text {
+            position: relative;
             display: inline-block;
-            margin-left: 10px;
+            background: var(--dark);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--warning);
+            border: 2px solid var(--warning);
+            z-index: 1;
         }
 
-        /* Navegación entre páginas */
-        .navigation {
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 90%;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .info-panel {
+            background: rgba(18, 24, 38, 0.85);
+            border-radius: 24px;
+            padding: 1.8rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 107, 74, 0.3);
+            backdrop-filter: blur(12px);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.6s ease-out;
+        }
+
+        .scene.active .info-panel {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .panel-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+            color: var(--accent);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .fact-list {
+            list-style: none;
+        }
+
+        .fact-item {
+            padding: 0.9rem 1.1rem;
+            margin-bottom: 0.7rem;
+            background: rgba(124, 142, 230, 0.08);
+            border-radius: 14px;
+            border-left: 5px solid var(--primary);
+            transition: all 0.25s;
+            cursor: pointer;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .fact-item:hover {
+            transform: translateX(12px);
+            background: rgba(255, 107, 74, 0.15);
+            border-left-color: var(--warning);
+        }
+
+        .fact-item strong {
+            color: var(--warning);
+        }
+
+        .visualization {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .model-card {
+            width: 100%;
+            max-width: 380px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--primary);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .model-inner {
+            width: 100%;
+            height: auto;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .model-icon {
+            font-size: 5rem;
+            margin: 0.5rem;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #2a2a4a, #1a1a3a);
+            border-radius: 16px;
+            min-height: 220px;
+            flex-direction: column;
+            gap: 10px;
+            color: var(--accent);
+            padding: 1rem;
+        }
+
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .stat {
+            background: rgba(44, 62, 102, 0.7);
+            border-radius: 16px;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat:hover {
+            transform: scale(1.02);
+            background: rgba(255, 107, 74, 0.7);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comparison-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            width: 100%;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .comparison-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--accent);
+            transition: 0.2s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .comparison-item:hover {
+            background: rgba(124, 142, 230, 0.2);
+            transform: translateY(-6px);
+        }
+
+        .comparison-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--warning);
+        }
+
+        .navigation-3d {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1.5rem;
+            z-index: 100;
         }
 
         .nav-btn {
-            background: linear-gradient(135deg, #ffcc00, #ffaa00);
-            color: #004d66;
+            background: rgba(255, 107, 74, 0.85);
             border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            font-size: 2rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s;
+            box-shadow: 0 5px 20px rgba(255, 107, 74, 0.5);
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+            font-weight: bold;
         }
 
         .nav-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.6);
+            transform: scale(1.1);
+            background: rgba(255, 80, 50, 1);
+            box-shadow: 0 8px 25px rgba(255, 107, 74, 0.8);
         }
 
-        .nav-btn:active {
-            transform: translateY(0);
+        .nav-btn::before {
+            content: "←";
         }
 
-        .nav-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        #next-btn::before {
+            content: "→";
         }
 
-        .page-indicator {
-            font-size: 1.2rem;
-            color: #ffd93d;
+        .scene-indicators {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            z-index: 100;
+        }
+
+        .scene-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .scene-indicator.active {
+            background: var(--primary);
+            transform: scale(1.5);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .scene-indicator.divider-indicator {
+            background: var(--warning);
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--warning);
+            background: transparent;
+        }
+
+        .scene-indicator.divider-indicator::after {
+            content: attr(data-title);
+            position: absolute;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(10, 10, 20, 0.95);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .scene-indicator::after {
+            content: attr(data-title);
+            position: absolute;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(10, 10, 20, 0.95);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            border: 1px solid var(--primary);
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        .scene-indicator:hover::after {
+            opacity: 1;
+        }
+
+        .interactive-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 107, 74, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s;
+            animation: float 5s infinite ease-in-out;
+            border: 2px dashed var(--warning);
+        }
+
+        .interactive-element:hover {
+            background: rgba(255, 107, 74, 0.5);
+            transform: scale(1.25);
+            border: 2px solid var(--primary);
+        }
+
+        .element-1 {
+            top: 8%;
+            left: 12%;
+            animation-delay: 0s;
+        }
+        .element-2 {
+            top: 82%;
+            right: 10%;
+            animation-delay: 1.2s;
+        }
+        .element-3 {
+            bottom: 12%;
+            left: 18%;
+            animation-delay: 2s;
+        }
+
+        .mini-fact {
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 0 5px black;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .image-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 40px var(--primary);
+            transform: scale(0.8);
+            transition: 0.3s;
+            background: #1a1f2e;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .image-modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 60vh;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .modal-text {
+            padding: 1rem;
+            color: white;
+            max-width: 500px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(255, 107, 74, 0.9);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            background: red;
+            transform: scale(1.1);
+        }
+
+        .example-box {
+            background: rgba(255, 180, 71, 0.15);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--warning);
+        }
+
+        .example-title {
+            color: var(--warning);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .quote-box {
+            background: rgba(124, 142, 230, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid var(--accent);
+            font-style: italic;
+            text-align: center;
+        }
+
+        .highlight-text {
+            color: var(--success);
             font-weight: bold;
         }
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            margin-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            opacity: 0.7;
+        .danger-text {
+            color: var(--danger);
+            font-weight: bold;
         }
 
-        /* Responsive */
-        @media (max-width: 1100px) {
-            .feature-card {
-                width: calc(50% - 40px);
-                text-align: left;
-            }
-            
-            .feature-name {
-                justify-content: flex-start;
-                min-height: auto;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.2rem;
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .feature-card {
-                width: 100%;
-            }
-            
-            .modal-content {
-                margin: 10% auto;
-                padding: 20px;
-                width: 95%;
-            }
-            
-            .intro-container {
-                flex-direction: column;
-            }
-            
-            .intro-image, .intro-text {
-                width: 100%;
-            }
-            
-            .navigation {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .nav-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .game-container {
-                flex-direction: column;
-            }
-            
-            .competency-card {
-                width: 100%;
-            }
-            
-            .game-stats {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .feature-card {
-                padding: 15px;
-            }
-            
-            .feature-name {
-                font-size: 1.3rem;
-            }
-            
-            .feature-icon {
-                font-size: 2.8rem;
-            }
-            
-            .key-facts {
+        @media (max-width: 900px) {
+            .content-grid {
                 grid-template-columns: 1fr;
+            }
+            .scene-title {
+                font-size: 2rem;
+            }
+            .panel-title {
+                font-size: 1.4rem;
+            }
+            .scene-indicators {
+                right: 0.5rem;
+            }
+            .scene-indicator::after {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Página 1: Introducción -->
-        <div class="page active" id="page1">
-            <header>
-                <h1><i class="fas fa-clipboard-check"></i> Enseñanza Basada en Competencias</h1>
-                <p class="subtitle">No importa cómo aprendiste, importa lo que PUEDES HACER</p>
-            </header>
+    <div class="image-modal" id="imageModal">
+        <div class="modal-content">
+            <img class="modal-image" id="modalImage" src="" alt="Información adicional">
+            <div class="modal-text"></div>
+            <button class="modal-close" id="modalClose">×</button>
+        </div>
+    </div>
 
-            <div class="intro-container">
-                <div class="intro-image">
-                    <img src="img1.jpg" alt="Personas en situación laboral">
+    <div id="scene-container">
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TEMA 1: FALACIA DE CAMBIO (Escenas 1-4)  -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- SCENE 1: Definición y concepto de Falacia de Cambio -->
+        <div class="scene active" id="scene1">
+            <div class="theme-badge badge-cambio">Tema 1 · Distorsión Cognitiva</div>
+            <h1 class="scene-title">🌀 FALACIA DE CAMBIO</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">📖 ¿Qué es esta distorsión?</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="La Falacia de Cambio es una distorsión cognitiva identificada por el psiquiatra Aaron Beck. Consiste en creer que nuestra felicidad depende de que otras personas cambien su forma de ser o actuar.">
+                            <strong>Definición:</strong> Creer que <strong>nuestra felicidad depende</strong> de que los demás cambien para ajustarse a lo que nosotros esperamos o necesitamos.
+                        </li>
+                        <li class="fact-item" data-info="Parte de una expectativa irreal: pensamos que si ejercemos suficiente presión, insistencia, amor o manipulación, lograremos que la otra persona modifique su comportamiento, hábitos o personalidad.">
+                            Se basa en la expectativa <strong>irreal</strong> de que podemos controlar o moldear a otros si insistimos lo suficiente.
+                        </li>
+                        <li class="fact-item" data-info="La persona que cae en esta falacia se convence de que 'si tan solo él/ella cambiara, yo sería feliz', depositando su bienestar en manos ajenas.">
+                            El pensamiento central es: <strong>"Si tan solo él/ella cambiara... yo sería feliz."</strong>
+                        </li>
+                        <li class="fact-item" data-info="Esta distorsión es muy común en relaciones de pareja, familiares y laborales. Nos hace creer que tenemos el poder y el derecho de modificar a los demás.">
+                            Es muy común en <strong>relaciones de pareja, familiares y laborales.</strong>
+                        </li>
+                    </ul>
+                    <div class="example-box">
+                        <div class="example-title">💭 Ejemplo clásico</div>
+                        "El me pega, pero <strong>me dijo que va a cambiar</strong>."<br>
+                        "El me prometio, <strong>que ya no me lastimaria mas</strong>."
+                    </div>
                 </div>
-                
-                <div class="intro-text">
-                    <h2>¿Qué es CBLT?</h2>
-                    <p>La <strong>Enseñanza de Idiomas Basada en Competencias</strong> (CBLT) surgió en Estados Unidos en los años 70. A diferencia de otros métodos que se enfocan en CÓMO enseñar, CBLT se enfoca en lo que el estudiante DEBE PODER HACER al final del curso.</p>
-                    
-                    <p><strong>Idea central:</strong> "No importa cómo aprendiste, ni cuánta gramática sabes. Lo único que importa es: ¿PUEDES hacer lo que necesitas hacer con el idioma?"</p>
-                    
-                    <div class="key-facts">
-                        <div class="fact">
-                            <i class="fas fa-bullseye"></i>
-                            <h3>Enfoque</h3>
-                            <p>Resultados, no insumos</p>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">🔄</div>
+                                <p style="color: var(--accent); font-size:1.1rem;">"Esperar que otros cambien<br>para que yo esté bien"</p>
+                                <p style="color: var(--warning); font-size:0.9rem;">→ Expectativa irreal</p>
+                            </div>
                         </div>
-                        <div class="fact">
-                            <i class="fas fa-tasks"></i>
-                            <h3>Origen</h3>
-                            <p>Programas para refugiados e inmigrantes (1970s)</p>
+                    </div>
+                    <div class="stats-display">
+                        <div class="stat"><div class="stat-value">🎭</div><div class="stat-label">Control ilusorio</div></div>
+                        <div class="stat"><div class="stat-value">💔</div><div class="stat-label">Frustración</div></div>
+                        <div class="stat"><div class="stat-value">🔄</div><div class="stat-label">Espera infinita</div></div>
+                        <div class="stat"><div class="stat-value">🧠</div><div class="stat-label">Distorsión cognitiva</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="interactive-element element-1"><div class="mini-fact">"Con mi amor cambiará"</div></div>
+        </div>
+
+        <!-- SCENE 2: Más ejemplos y contextos -->
+        <div class="scene" id="scene2">
+            <div class="theme-badge badge-cambio">Tema 1 · Falacia de Cambio</div>
+            <h1 class="scene-title">💔 EJEMPLOS EN LA VIDA REAL</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">📌 Situaciones cotidianas</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="En relaciones románticas: 'Es celoso, pero cuando se dé cuenta de que lo amo de verdad, cambiará'. 'Bebe mucho, pero cuando tengamos hijos sentará cabeza'. Son creencias muy peligrosas.">
+                            <strong>💕 En las relaciones:</strong> "Es celoso/a y agresivo/a, pero cuando vea que lo quiero cambiará." / "Cuando tengamos hijos, sera otra persona."
+                        </li>
+                        <li class="fact-item" data-info="En la familia: 'Si le reclamo cada día, mi mamá entenderá mi punto de vista y cambiará su actitud'. 'Mi hermano debería ser más organizado, como yo'.">
+                            <strong>👨‍👩‍👧 En la familia:</strong> "Si le insisto cada día, mi primo dejara de drogarse." / "Mi hermano debería ser más como yo."
+                        </li>
+                        <li class="fact-item" data-info="En el trabajo o la escuela: 'Mi jefe debería ser más comprensivo conmigo'. 'Los demás en el equipo deberían trabajar con mi mismo nivel de exigencia'.">
+                            <strong>💼 En el trabajo:</strong> "Mi jefe debería reconocer mi esfuerzo sin que yo se lo pida." / "Mis compañeros deberían ser más responsables."
+                        </li>
+                        <li class="fact-item" data-info="En amistades: 'Si soy un buen amigo, él/ella dejará de ser tan egoísta y me valorará más'. Esperamos reciprocidad exacta.">
+                            <strong>🤝 En la amistad:</strong> "Si soy buen amigo, él dejará de ser tan egoísta." / "El/Ella debería llamarme más seguido."
+                        </li>
+                    </ul>
+                </div>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">💑</div>
+                                <p style="color: var(--warning); font-size:1.1rem;">"Yo puedo cambiarlo/a"</p>
+                                <p style="color: var(--danger); font-size:0.9rem;">⚠️ Pensamiento peligroso</p>
+                            </div>
                         </div>
-                        <div class="fact">
-                            <i class="fas fa-check-double"></i>
-                            <h3>Evaluación</h3>
-                            <p>Demostrar que SABES HACER</p>
+                    </div>
+                    <div class="comparison-container">
+                        <div class="comparison-item">
+                            <h3 class="comparison-title">❌ Pensamiento erróneo</h3>
+                            "Si él/ella cambiara,<br>todo sería perfecto"
                         </div>
-                        <div class="fact">
-                            <i class="fas fa-users"></i>
-                            <h3>Hoy</h3>
-                            <p>Estándares educativos K-12, TESOL</p>
+                        <div class="comparison-item">
+                            <h3 class="comparison-title">✅ Pensamiento realista</h3>
+                            "Lo acepto como es<br>o tomo distancia"
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="interactive-element element-2"><div class="mini-fact">"Cuando nos casemos, cambiará"</div></div>
+        </div>
 
-            <div class="navigation">
-                <button class="nav-btn" id="nextPageBtn">
-                    Ver Características <i class="fas fa-arrow-right"></i>
-                </button>
-                <div class="page-indicator">Página 1 de 2</div>
+        <!-- SCENE 3: Consecuencias negativas -->
+        <div class="scene" id="scene3">
+            <div class="theme-badge badge-cambio">Tema 1 · Falacia de Cambio</div>
+            <h1 class="scene-title">⚠️ CONSECUENCIAS NEGATIVAS</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">🩹 ¿Por qué es tan dañino?</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="La relación se convierte en un campo de batalla. Una persona presiona y exige cambios; la otra se siente controlada, juzgada e insuficiente. Esto genera resentimiento mutuo.">
+                            <strong>Relaciones tóxicas:</strong> La dinámica se vuelve insana: uno presiona, el otro se siente <strong>juzgado y controlado</strong>. Se genera resentimiento.
+                        </li>
+                        <li class="fact-item" data-info="Como los demás rara vez actúan según nuestro guión, vivimos en un estado de frustración crónica, enojo y decepción constante.">
+                            <strong>Frustración constante:</strong> Vivimos <strong>enojados o decepcionados</strong> porque los demás no siguen nuestro guion.
+                        </li>
+                        <li class="fact-item" data-info="Al depositar nuestra felicidad en las acciones de otros, les entregamos el control de nuestro bienestar emocional. Nos volvemos dependientes.">
+                            <strong>Pérdida de control:</strong> Le <strong>regalamos a otros</strong> el poder sobre nuestra felicidad y bienestar.
+                        </li>
+                        <li class="fact-item" data-info="Mientras estamos obsesionados con cambiar a los demás, no trabajamos en nosotros mismos ni en lo que sí está bajo nuestro control.">
+                            <strong>Estancamiento personal:</strong> Dejamos de trabajar en <strong>nuestro propio crecimiento</strong> por estar enfocados en cambiar a otros.
+                        </li>
+                    </ul>
+                </div>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">🔗</div>
+                                <p style="color: var(--danger); font-size:1.1rem;">"Atrapados esperando<br>que otros cambien"</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-display">
+                        <div class="stat"><div class="stat-value">😤</div><div class="stat-label">Enojo</div></div>
+                        <div class="stat"><div class="stat-value">😢</div><div class="stat-label">Decepción</div></div>
+                        <div class="stat"><div class="stat-value">🔒</div><div class="stat-label">Dependencia</div></div>
+                        <div class="stat"><div class="stat-value">🚫</div><div class="stat-label">Estancamiento</div></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Página 2: Características + JUEGO MEJORADO -->
-        <div class="page" id="page2">
-            <header>
-                <h1><i class="fas fa-list-alt"></i> Características Clave de CBLT</h1>
-                <p class="subtitle">Lo que realmente importa: ¿puedes hacerlo?</p>
-            </header>
-
-            <div class="features-container" id="featuresContainer">
-                <!-- Las tarjetas de características se generarán con JavaScript -->
-            </div>
-
-            <!-- SECCIÓN DEL JUEGO MEJORADO -->
-            <div class="game-section">
-                <!-- <h2 class="game-title">
-                    <i class="fas fa-gamepad"></i> Competency Challenge 
-                    <span class="difficulty-badge">Nivel EXPERTO</span>
-                </h2>
-                <p style="margin-bottom: 20px;">Selecciona la competencia EXACTA que necesitas para cada situación. ¡Cada error cuenta!</p> -->
-                
-                <div class="game-stats">
-                    <div class="stat-box">
-                        <span id="scoreValue">0</span> Aciertos
-                    </div>
-                    <div class="stat-box">
-                        <span id="attemptsValue">0</span> Intentos
-                    </div>
-                    <div class="stat-box">
-                        <span id="accuracyValue">0%</span> Precisión
+        <!-- SCENE 4: Soluciones y cierre Tema 1 -->
+        <div class="scene" id="scene4">
+            <div class="theme-badge badge-cambio">Tema 1 · Falacia de Cambio</div>
+            <h1 class="scene-title">🔧 SOLUCIONES Y CIERRE</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">✅ ¿Cómo superar esta falacia?</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="Aceptar que la única persona a la que realmente podemos cambiar es a nosotros mismos. Los demás solo cambian si ellos quieren.">
+                            <strong>Aceptación radical:</strong> La <strong>única persona</strong> que puedes controlar y cambiar eres <strong>tú mismo</strong>.
+                        </li>
+                        <li class="fact-item" data-info="En lugar de preguntarte '¿Cómo hago para que cambie?', pregúntate '¿Qué puedo hacer YO para estar bien si esta persona no cambia?'.">
+                            <strong>Redirigir el enfoque:</strong> Pregúntate: <strong>"¿Qué puedo hacer YO para estar bien si esta persona no cambia?"</strong>
+                        </li>
+                        <li class="fact-item" data-info="Aceptar no significa tolerar maltratos. Puedes alejarte de quien te lastima. Eso no es 'cambiar al otro', es cuidarte a ti.">
+                            <strong>Poner límites sanos:</strong> Si alguien te lastima, puedes <strong>alejarte</strong>. Eso es cuidarte, no controlar.
+                        </li>
+                    </ul>
+                    <div class="quote-box">
+                        <p style="color: var(--warning);">💡 <strong>Frase clave:</strong></p>
+                        "Considera lo difícil que es cambiarte a ti mismo y entenderás lo poco que puedes esperar cambiar a los demás." <br>— <strong>Arnold Glasow</strong>
                     </div>
                 </div>
-                
-                <div class="game-container">
-                    <div class="situation-box">
-                        <div class="situation-title">Situación #<span id="situationNumber">1</span>/<span id="totalSituations">12</span></div>
-                        <div class="situation-text" id="situationText">
-                            "Llegas tarde al trabajo porque el camión no pasó. Tu jefe te pregunta ¿POR QUÉ llegaste tarde?"
-                        </div>
-                        <div class="feedback" id="gameFeedback">
-                            <!-- Haz clic en la competencia correcta -->
-                        </div>
-                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                            <button class="game-btn" id="newSituationBtn">
-                                <i class="fas fa-redo"></i> Nueva Situación
-                            </button>
-                            <button class="game-btn" id="resetGameBtn">
-                                <i class="fas fa-undo-alt"></i> Reiniciar Preguntas
-                            </button>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">🗝️</div>
+                                <p style="color: var(--success); font-size:1.2rem;">"La única persona<br>que puedes cambiar<br><strong>eres tú</strong>"</p>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 15px; min-width: 300px;" id="competenciesContainer">
-                        <!-- Las competencias se generarán dinámicamente con JavaScript -->
+                    <div class="stats-display">
+                        <div class="stat"><div class="stat-value">✅</div><div class="stat-label">Aceptar</div></div>
+                        <div class="stat"><div class="stat-value">🎯</div><div class="stat-label">Enfocarme en mí</div></div>
+                        <div class="stat"><div class="stat-value">🚧</div><div class="stat-label">Poner límites</div></div>
+                        <div class="stat"><div class="stat-value">🛡️</div><div class="stat-label">Cuidarme</div></div>
                     </div>
                 </div>
-                
-                <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
-                    <i class="fas fa-info-circle"></i> En CBLT, cada competencia es específica para una situación. ¡No todas sirven para todo!
-                </p>
-            </div>
-
-            <!-- Modal para información detallada -->
-            <div id="infoModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2 id="modalTitle">Título</h2>
-                    <div id="modalInfo"></div>
-                    <div class="modal-image">
-                        <img id="modalImg" src="" alt="">
-                    </div>
-                </div>
-            </div>
-
-            <div class="navigation">
-                <button class="nav-btn" id="prevPageBtn">
-                    <i class="fas fa-arrow-left"></i> Volver a Introducción
-                </button>
-                <div class="page-indicator">Página 2 de 2</div>
             </div>
         </div>
 
-        <footer>
-            <p>Competency-Based Language Teaching • Be Wise English School</p>
-        </footer>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- DIVISOR ENTRE TEMAS (Escena 5)          -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="scene" id="scene5">
+            <div class="section-divider">
+                <div class="divider-line"></div>
+                <div class="divider-text">
+                    🏁 FIN DEL TEMA 1 &nbsp;|&nbsp; ▶ INICIO DEL TEMA 2
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:2rem; color: var(--light);">
+                <!-- <p style="font-size:1.3rem;">Hemos terminado con <span style="color: var(--primary);">Falacia de Cambio</span>.</p>
+                <p style="font-size:1.1rem; margin-top:0.5rem;">Ahora pasamos a la segunda distorsión:</p> -->
+                <p style="font-size:2rem; margin-top:1rem; color: var(--accent); font-weight: bold;">🏷️ Etiquetas Globales</p>
+                <p style="margin-top:1rem; color: var(--warning);">(También conocida como "Etiquetado" o "Global Labeling")</p>
+                <!-- <p style="margin-top:2rem; font-size:0.9rem; color: #aaa;">Usa las flechas o los indicadores para continuar →</p> -->
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TEMA 2: ETIQUETAS GLOBALES (Escenas 6-9) -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- SCENE 6: Definición de Etiquetas Globales -->
+        <div class="scene" id="scene6">
+            <div class="theme-badge badge-etiquetas">Tema 2 · Distorsión Cognitiva</div>
+            <h1 class="scene-title">🏷️ ETIQUETAS GLOBALES</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">📖 ¿Qué son las etiquetas globales?</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="El etiquetado global es otra distorsión cognitiva identificada por Aaron Beck. Consiste en asignar una etiqueta negativa, general y permanente a toda la persona basándose en un solo comportamiento o error.">
+                            <strong>Definición:</strong> Asignar una <strong>etiqueta negativa, global y permanente</strong> a una persona (incluyéndonos a nosotros) basándose en <strong>un solo error o característica</strong>.
+                        </li>
+                        <li class="fact-item" data-info="En lugar de describir una conducta específica ('hoy me equivoqué'), hacemos un juicio total sobre la identidad ('soy un inútil'). Es pasar del verbo HACER al verbo SER.">
+                            En lugar de describir una conducta (<strong>"Hoy me equivoqué"</strong>), juzgamos toda la identidad (<strong>"Soy un inútil"</strong>).
+                        </li>
+                        <li class="fact-item" data-info="Convertimos un comportamiento puntual y específico en una cualidad permanente y definitoria de la personalidad de alguien.">
+                            Convertimos un <strong>comportamiento puntual</strong> en una <strong>cualidad permanente</strong> de la personalidad.
+                        </li>
+                        <li class="fact-item" data-info="Las etiquetas pueden ser hacia uno mismo (autoetiquetas: 'soy un fracaso') o hacia los demás (heteroetiquetas: 'es un idiota'). Ambas son igual de dañinas.">
+                            Pueden ser <strong>hacia uno mismo</strong> (autoetiquetas) o <strong>hacia los demás</strong> (heteroetiquetas).
+                        </li>
+                    </ul>
+                </div>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">🏷️</div>
+                                <p style="color: var(--accent); font-size:1.1rem;">"Una acción NO define<br>a toda una persona"</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-display">
+                        <div class="stat"><div class="stat-value">🏷️</div><div class="stat-label">Etiqueta global</div></div>
+                        <div class="stat"><div class="stat-value">🎭</div><div class="stat-label">Generalización</div></div>
+                        <div class="stat"><div class="stat-value">⚠️</div><div class="stat-label">Permanente</div></div>
+                        <div class="stat"><div class="stat-value">🧠</div><div class="stat-label">Distorsión</div></div>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-title">💭 Ejemplo clave</div>
+                        Reprobé un examen → <span class="danger-text">"Soy un fracaso"</span><br>
+                        <span class="highlight-text">(Error ≠ Identidad)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="interactive-element element-3"><div class="mini-fact">"Soy un desastre" → Autoetiqueta</div></div>
+        </div>
+
+        <!-- SCENE 7: Tipos y ejemplos de etiquetas -->
+        <div class="scene" id="scene7">
+            <div class="theme-badge badge-etiquetas">Tema 2 · Etiquetas Globales</div>
+            <h1 class="scene-title">📌 TIPOS Y EJEMPLOS</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">🔴 Autoetiquetas (hacia uno mismo)</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="Reprobar un examen no te convierte en un fracaso. Significa que necesitas estudiar de forma diferente o que ese día no fue el mejor.">
+                            Repruebo un examen → <strong>"Soy un fracaso."</strong>
+                        </li>
+                        <li class="fact-item" data-info="Cometer un error al hablar en público no te define como torpe. Muchas personas exitosas han tenido malas presentaciones.">
+                            Me equivoco al hablar → <strong>"Soy un torpe / un tonto."</strong>
+                        </li>
+                        <li class="fact-item" data-info="Tener un desacuerdo con tu pareja no significa que seas 'malo para las relaciones'. Es normal discutir a veces.">
+                            Discuto con mi pareja → <strong>"Soy malo para las relaciones."</strong>
+                        </li>
+                    </ul>
+                    <h2 class="panel-title" style="margin-top:1.5rem;">🟠 Heteroetiquetas (hacia otros)</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="Que alguien llegue tarde una vez no lo convierte en irresponsable. Hay que ver el contexto y la frecuencia.">
+                            Un amigo llega tarde → <strong>"Es un irresponsable."</strong>
+                        </li>
+                        <li class="fact-item" data-info="Equivocarse en un pedido no hace que el mesero sea incompetente. Quizá tuvo un mal día o hubo una confusión.">
+                            El mesero se equivoca → <strong>"Este mesero no sirve."</strong>
+                        </li>
+                        <li class="fact-item" data-info="Tener una opinión diferente no hace ignorante a nadie. Es simplemente tener otra perspectiva.">
+                            Alguien opina distinto → <strong>"Es un ignorante."</strong>
+                        </li>
+                    </ul>
+                </div>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">🗣️</div>
+                                <p style="color: var(--danger); font-size:1rem;">Etiquetar es reducir<br>a una persona a<br><strong>una sola palabra</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-container">
+                        <div class="comparison-item">
+                            <h3 class="comparison-title">❌ Etiqueta</h3>
+                            "Eres un flojo"
+                        </div>
+                        <div class="comparison-item">
+                            <h3 class="comparison-title">✅ Descripción</h3>
+                            "Hoy no hiciste tu tarea, me la traes para la proxima"
+                        </div>
+                    </div>
+                    <div class="comparison-container">
+                        <div class="comparison-item">
+                            <h3 class="comparison-title">❌ Etiqueta</h3>
+                            "Soy un desastre"
+                        </div>
+                        <div class="comparison-item">
+                            <h3 class="comparison-title">✅ Descripción</h3>
+                            "Hoy fui desorganizado, sere mas eficiente"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCENE 8: Peligros y consecuencias -->
+        <div class="scene" id="scene8">
+            <div class="theme-badge badge-etiquetas">Tema 2 · Etiquetas Globales</div>
+            <h1 class="scene-title">⚠️ PELIGROS DE ETIQUETAR</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">🩹 ¿Por qué es tan peligroso?</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="Cuando te etiquetas como 'fracasado', 'feo' o 'inútil', tu cerebro activa el sesgo de confirmación y busca activamente pruebas que validen esa etiqueta, ignorando toda evidencia en contra.">
+                            <strong>Baja autoestima:</strong> Si te etiquetas como <strong>"fracasado"</strong>, tu cerebro buscará <strong>pruebas para confirmarlo</strong>, ignorando tus logros.
+                        </li>
+                        <li class="fact-item" data-info="Al etiquetar a otros como 'flojos', 'agresivos' o 'irresponsables', dejas de ver a la persona completa. Cada pequeño error 'confirma' tu prejuicio.">
+                            <strong>Prejuicios rígidos:</strong> Dejas de ver a la persona real. Solo ves la etiqueta. <strong>Cada error la "confirma"</strong>.
+                        </li>
+                        <li class="fact-item" data-info="Nos enfadamos mucho más cuando pensamos '¡Es un idiota!' que cuando pensamos 'Tomó una mala decisión'. La etiqueta intensifica la emoción negativa.">
+                            <strong>Estrés e irritabilidad:</strong> La emoción negativa es <strong>mucho más intensa</strong> con una etiqueta que con una descripción.
+                        </li>
+                        <li class="fact-item" data-info="Al etiquetar a alguien, dejamos de intentar comprenderlo. 'Es un flojo' cierra la conversación. No hay espacio para el diálogo.">
+                            <strong>Comunicación bloqueada:</strong> Las etiquetas <strong>cierran el diálogo</strong> y generan conflicto.
+                        </li>
+                    </ul>
+                </div>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">💥</div>
+                                <p style="color: var(--danger); font-size:1.1rem;">"Las etiquetas<br>son como cadenas<br>que atan la mente"</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-display">
+                        <div class="stat"><div class="stat-value">📉</div><div class="stat-label">Autoestima baja</div></div>
+                        <div class="stat"><div class="stat-value">🔒</div><div class="stat-label">Prejuicios</div></div>
+                        <div class="stat"><div class="stat-value">😠</div><div class="stat-label">Irritabilidad</div></div>
+                        <div class="stat"><div class="stat-value">🚫</div><div class="stat-label">Sin diálogo</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCENE 9: Soluciones y cierre Tema 2 -->
+        <div class="scene" id="scene9">
+            <div class="theme-badge badge-etiquetas">Tema 2 · Etiquetas Globales</div>
+            <h1 class="scene-title">🩺 SOLUCIONES Y CONCLUSIÓN</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">✅ ¿Cómo dejar de etiquetar?</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="En lugar de decir 'Soy' (identidad), di 'Hoy hice' o 'Esta vez actué' (conducta). Separa el verbo HACER del verbo SER.">
+                            <strong>Separar acción de identidad:</strong> Distingue entre lo que alguien <strong>HACE</strong> y lo que <strong>ES</strong>. "Hoy actué mal" ≠ "Soy malo".
+                        </li>
+                        <li class="fact-item" data-info="Describe el comportamiento con palabras objetivas, no con juicios. Di 'Llegó 10 minutos tarde', no 'Es un impuntual'.">
+                            <strong>Usar lenguaje descriptivo:</strong> Describe el hecho, no a la persona. "Llegó tarde" en lugar de "Es un irresponsable".
+                        </li>
+                        <li class="fact-item" data-info="Cuando aparezca una autoetiqueta, busca activamente evidencia que la contradiga. Si piensas 'Soy un fracaso', pregúntate: '¿En qué cosas SÍ he tenido éxito?'.">
+                            <strong>Buscar evidencia contraria:</strong> Si piensas <strong>"Soy un fracaso"</strong>, pregúntate: <strong>"¿En qué SÍ he tenido éxito?"</strong>
+                        </li>
+                    </ul>
+                    <div class="quote-box">
+                        <p style="color: var(--success);">💡 <strong>Recuerda:</strong></p>
+                        "En vez de <span class="danger-text">'Soy un desastre'</span> → <span class="highlight-text">'Hoy fui desorganizado, pero puedo mejorar mañana'</span>"
+                    </div>
+                </div>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">🌟</div>
+                                <p style="color: var(--success); font-size:1.2rem;">"Juzga acciones,<br><strong>no personas</strong>"</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-display">
+                        <div class="stat"><div class="stat-value">🔀</div><div class="stat-label">Separar HACER de SER</div></div>
+                        <div class="stat"><div class="stat-value">📝</div><div class="stat-label">Lenguaje descriptivo</div></div>
+                        <div class="stat"><div class="stat-value">🔍</div><div class="stat-label">Buscar evidencia</div></div>
+                        <div class="stat"><div class="stat-value">💬</div><div class="stat-label">"Hoy fue difícil"</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCENE 10: Conclusión final de ambos temas -->
+        <div class="scene" id="scene10">
+            <h1 class="scene-title">🎯 CONCLUSIÓN FINAL</h1>
+            <div class="content-grid">
+                <div class="info-panel" style="transition-delay:0.2s">
+                    <h2 class="panel-title">📌 Puntos clave</h2>
+                    <ul class="fact-list">
+                        <li class="fact-item" data-info="Falacia de Cambio: La única persona que podemos controlar y cambiar somos nosotros mismos. Aceptar a los demás como son nos libera.">
+                            <strong>🔄 Falacia de Cambio:</strong> La <strong>única persona</strong> que puedes controlar eres <strong>tú</strong>. Acepta a los demás o aléjate.
+                        </li>
+                        <li class="fact-item" data-info="Etiquetas Globales: Una acción no define a una persona. Hay que distinguir entre lo que alguien hace y lo que es.">
+                            <strong>🏷️ Etiquetas Globales:</strong> Distingue entre <strong>HACER</strong> y <strong>SER</strong>. Juzga acciones, no personas.
+                        </li>
+                        <li class="fact-item" data-info="Ambas distorsiones nos alejan de la realidad y nos generan sufrimiento. Reconocerlas es el primer paso para cambiarlas.">
+                            Ambas distorsiones nos <strong>desconectan de la realidad</strong> y nos hacen sufrir innecesariamente.
+                        </li>
+                        <li class="fact-item" data-info="La clave está en ser más flexibles y compasivos con nosotros mismos y con los demás. Trabajar en lo que sí está bajo nuestro control.">
+                            La clave: <strong>flexibilidad, compasión</strong> y trabajar en lo que <strong>sí está bajo nuestro control</strong>.
+                        </li>
+                    </ul>
+                </div>
+                <div class="visualization">
+                    <div class="model-card">
+                        <div class="model-inner">
+                            <div class="img-placeholder">
+                                <div class="model-icon">🧠✨</div>
+                                <p style="color: var(--success); font-size:1.2rem;">Piensa mejor<br><strong>Vive mejor</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-display">
+                        <div class="stat"><div class="stat-value">🔄</div><div class="stat-label">Aceptar</div></div>
+                        <div class="stat"><div class="stat-value">🏷️</div><div class="stat-label">Describir</div></div>
+                        <div class="stat"><div class="stat-value">🎯</div><div class="stat-label">Enfocar</div></div>
+                        <div class="stat"><div class="stat-value">🌟</div><div class="stat-label">Crecer</div></div>
+                    </div>
+                    <div class="quote-box" style="margin-top:1rem;">
+                        <p style="color: var(--warning);">💡 <strong>Mensaje final:</strong></p>
+                        "Tanto la <span style="color: var(--primary);">Falacia de Cambio</span> como las <span style="color: var(--accent);">Etiquetas Globales</span> nos hacen prisioneros de expectativas irreales. La libertad está en <strong>aceptar, describir y enfocarnos en nosotros mismos</strong>."
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation-3d">
+        <button class="nav-btn" id="prev-btn" title="Anterior"></button>
+        <button class="nav-btn" id="next-btn" title="Siguiente"></button>
+    </div>
+    <div class="scene-indicators">
+        <div class="scene-indicator active" data-scene="0" data-title="Falacia: Definición"></div>
+        <div class="scene-indicator" data-scene="1" data-title="Falacia: Ejemplos"></div>
+        <div class="scene-indicator" data-scene="2" data-title="Falacia: Consecuencias"></div>
+        <div class="scene-indicator" data-scene="3" data-title="Falacia: Solución"></div>
+        <div class="scene-indicator divider-indicator" data-scene="4" data-title="⬇ CAMBIO DE TEMA ⬇"></div>
+        <div class="scene-indicator" data-scene="5" data-title="Etiquetas: Definición"></div>
+        <div class="scene-indicator" data-scene="6" data-title="Etiquetas: Tipos y ejemplos"></div>
+        <div class="scene-indicator" data-scene="7" data-title="Etiquetas: Peligros"></div>
+        <div class="scene-indicator" data-scene="8" data-title="Etiquetas: Solución"></div>
+        <div class="scene-indicator" data-scene="9" data-title="Conclusión Final"></div>
     </div>
 
     <script>
-        // Datos de las características de CBLT (8 puntos clave de Auerbach, resumidos)
-        const caracteristicasCBLT = [
-            {
-                id: 1,
-                title: "Funcionar en la Sociedad",
-                icon: "fas fa-globe-americas",
-                info: "El objetivo es que los estudiantes se conviertan en INDIVIDUOS AUTÓNOMOS, capaces de enfrentar las demandas del mundo real. No se trata solo de hablar, sino de PODER VIVIR usando el idioma.",
-                img: "img2.jpg"
-            },
-            {
-                id: 2,
-                title: "Habilidades para la Vida",
-                icon: "fas fa-heartbeat",
-                info: "Se enseñan las formas del idioma que son NECESARIAS para situaciones concretas: trabajo, banco, médico, supermercado. No se enseña 'por si acaso', sino PARA CUANDO LO NECESITES.",
-                img: "img3.jpg"
-            },
-            {
-                id: 3,
-                title: "Orientación al Desempeño",
-                icon: "fas fa-running",
-                info: "Lo que IMPORTA es lo que el estudiante PUEDE HACER. No importa cuánto sepa de gramática, importa si puede: pedir trabajo, explicar un problema, entender una factura.",
-                img: "img4.jpg"
-            },
-            {
-                id: 4,
-                title: "Instrucción Modularizada",
-                icon: "fas fa-puzzle-piece",
-                info: "El aprendizaje se divide en 'fragmentos manejables'. En lugar de un curso enorme, aprendes por MÓDULOS: 'Módulo 1: Pedir trabajo', 'Módulo 2: Ir al médico'. Ves tu progreso claramente.",
-                img: "img5.jpg"
-            },
-            {
-                id: 5,
-                title: "Resultados Explícitos",
-                icon: "fas fa-clipboard-list",
-                info: "Desde el PRIMER DÍA sabes exactamente qué vas a aprender. Todo es PÚBLICO: 'Al final de este curso PODRÁS: 1) Saludar, 2) Pedir comida, 3) Explicar un retraso'. No hay sorpresas.",
-                img: "img6.jpg"
-            },
-            {
-                id: 6,
-                title: "Evaluación Continua",
-                icon: "fas fa-sync-alt",
-                info: "Evalúas ANTES (saber qué necesitas), DURANTE (ver progreso) y DESPUÉS (confirmar que aprendiste). Si no dominas una competencia, la REPITES hasta lograrlo. No importa el tiempo.",
-                img: "img7.jpg"
-            },
-            {
-                id: 7,
-                title: "Demostración Práctica",
-                icon: "fas fa-check-circle",
-                info: "NADA de exámenes escritos. Demuestras que SABES HACER: 'Muéstrame que puedes pedir comida en un restaurante'. Si lo haces bien, ¡aprobaste! Así de simple.",
-                img: "img8.jpg"
-            },
-            {
-                id: 8,
-                title: "Individualizado",
-                icon: "fas fa-user-graduate",
-                info: "Cada estudiante avanza a su RITMO. Si ya sabes saludar, no pierdes tiempo. Si te cuesta el trabajo, practicas más. Tú decides el ritmo, no el calendario.",
-                img: "img9.jpg"
-            }
-        ];
+        (function() {
+            const scenes = document.querySelectorAll('.scene');
+            const indicators = document.querySelectorAll('.scene-indicator');
+            const prev = document.getElementById('prev-btn');
+            const next = document.getElementById('next-btn');
+            let current = 0;
+            const totalScenes = scenes.length;
 
-        // COMPETENCIAS DISPONIBLES (ahora más variadas)
-        const competencies = [
-            { id: 1, name: "Argumentar una situación", icon: "fas fa-exclamation-triangle", desc: "" },
-            { id: 2, name: "Organizar datos estructurados", icon: "fas fa-file-alt", desc: "" },
-            { id: 3, name: "Seguir una secuencia operativa", icon: "fas fa-phone-alt", desc: "" },
-            { id: 4, name: "Aplicar razonamiento matemático", icon: "fas fa-coins", desc: "" },
-            { id: 5, name: "Ejecutar indicaciones precisas", icon: "fas fa-list-ol", desc: "" },
-            { id: 6, name: "Describir trayectorias espaciales", icon: "fas fa-map-signs", desc: "" },
-            { id: 7, name: "Interpretar patrones temporales", icon: "fas fa-clock", desc: "" },
-            { id: 8, name: "Sintetizar datos personales", icon: "fas fa-question-circle", desc: "" }
-        ];
-
-        // SITUACIONES con sus competencias correctas (cada una con un ID diferente)
-        const situaciones = [
-            {
-                text: "El transporte público falló y llegas después de la hora de entrada. Tu supervisor te escucha y decide si justifica el retraso.",
-                correctCompetencyId: 1, // Explicar un problema
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Explicar un problema'. Las otras competencias no sirven para justificar un retraso."
-            },
-            {
-                text: "Revisas un menú con promociones, restricciones y combinaciones antes de pedir.",
-                correctCompetencyId: 1, // Explicar un problema
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Explicar un problema' (decir qué quieres comer)."
-            },
-            {
-                text: "En una selección laboral te piden ejemplos específicos de proyectos previos y resultados medibles.",
-                correctCompetencyId: 8, // Responder preguntas
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Responder preguntas' en una entrevista formal."
-            },
-            {
-                text: "Recursos Humanos te entrega un documento oficial para que llenes un formulario.",
-                correctCompetencyId: 2, // Llenar un formulario
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Llenar un formulario'. Las otras no te sirven aquí."
-            },
-            {
-                text: "Necesitas agendar atención médica y solo te ofrecen un número telefónico automatizado con opciones.",
-                correctCompetencyId: 3, // Hacer una llamada
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Hacer una llamada' para comunicarte por teléfono."
-            },
-            {
-                text: "Compras varios artículos con descuento y debes verificar si el cambio coincide con el total correcto.",
-                correctCompetencyId: 4, // Manejar dinero
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Manejar dinero' para contar tu cambio y verificar que esté bien."
-            },
-            {
-                text: "Un visitante extranjero quiere llegar a un sitio específico y depende totalmente de tu orientación verbal.",
-                correctCompetencyId: 6, // Dar indicaciones
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Dar indicaciones' para ayudar a alguien a llegar a un lugar."
-            },
-            {
-                text: "Te entregan un calendario laboral con turnos variables, descansos y excepciones por días festivos.",
-                correctCompetencyId: 7, // Entender horarios
-                feedbackCorrect: "✅ ¡Correcto! NECITAS poder 'Entender horarios' para saber cuándo tienes que trabajar."
-            },
-            {
-                text: "Un especialista te indica un tratamiento con dosis, intervalos y duración precisa.",
-                correctCompetencyId: 5, // Seguir instrucciones
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Seguir instrucciones' médicas para tomar la medicina correctamente."
-            },
-            {
-                text: "Contactas a una empresa y te solicitan información básica para considerarte en una vacante.",
-                correctCompetencyId: 3, // Hacer una llamada
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Hacer una llamada' para comunicarte profesionalmente."
-            },
-            {
-                text: "En una institución financiera te solicitan completar documentación antes de continuar el trámite.",
-                correctCompetencyId: 2, // Llenar un formulario
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Llenar un formulario' bancario correctamente."
-            },
-            {
-                text: "Pagas con una cantidad mayor al precio marcado y necesitas comprobar si el vuelto es correcto.",
-                correctCompetencyId: 4, // Manejar dinero
-                feedbackCorrect: "✅ ¡Correcto! NECESITAS poder 'Manejar dinero' para calcular cuánto gastaste ($200 - $50 = $150)."
-            }
-        ];
-
-        let currentPage = 1;
-        let currentSituationIndex = 0;
-        let selectedCompetency = null;
-        let score = 0;
-        let attempts = 0;
-        let canSelect = true;
-
-        const page1 = document.getElementById('page1');
-        const page2 = document.getElementById('page2');
-        const nextPageBtn = document.getElementById('nextPageBtn');
-        const prevPageBtn = document.getElementById('prevPageBtn');
-        const featuresContainer = document.getElementById('featuresContainer');
-        const modal = document.getElementById('infoModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalInfo = document.getElementById('modalInfo');
-        const modalImg = document.getElementById('modalImg');
-        const closeBtn = document.querySelector('.close');
-        
-        // Elementos del juego
-        const competenciesContainer = document.getElementById('competenciesContainer');
-        const situationText = document.getElementById('situationText');
-        const situationNumber = document.getElementById('situationNumber');
-        const totalSituations = document.getElementById('totalSituations');
-        const gameFeedback = document.getElementById('gameFeedback');
-        const newSituationBtn = document.getElementById('newSituationBtn');
-        const resetGameBtn = document.getElementById('resetGameBtn');
-        const scoreValue = document.getElementById('scoreValue');
-        const attemptsValue = document.getElementById('attemptsValue');
-        const accuracyValue = document.getElementById('accuracyValue');
-
-        // Mezclar array (Fisher-Yates)
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // Seleccionar 4 competencias aleatorias que incluyan la correcta
-        function getRandomCompetencies(correctId) {
-            // Obtener todas las competencias excepto la correcta
-            const otherCompetencies = competencies.filter(c => c.id !== correctId);
-            
-            // Mezclar y tomar 3 aleatorias
-            const shuffled = shuffleArray([...otherCompetencies]);
-            const selected = shuffled.slice(0, 3);
-            
-            // Añadir la competencia correcta
-            const result = [...selected, competencies.find(c => c.id === correctId)];
-            
-            // Mezclar para que la correcta no siempre esté en la misma posición
-            return shuffleArray(result);
-        }
-
-        // Actualizar estadísticas
-        function updateStats() {
-            scoreValue.textContent = score;
-            attemptsValue.textContent = attempts;
-            const accuracy = attempts > 0 ? Math.round((score / attempts) * 100) : 0;
-            accuracyValue.textContent = accuracy + '%';
-        }
-
-        // Resetear juego
-        function resetGame() {
-            score = 0;
-            attempts = 0;
-            canSelect = true;
-            updateStats();
-            currentSituationIndex = Math.floor(Math.random() * situaciones.length);
-            actualizarSituacion();
-        }
-
-        // Crear tarjetas de características
-        function crearTarjetasCaracteristicas() {
-            caracteristicasCBLT.forEach(caracteristica => {
-                const card = document.createElement('div');
-                card.className = 'feature-card';
-                card.innerHTML = `
-                    <div class="feature-number">${caracteristica.id}</div>
-                    <div class="feature-name">${caracteristica.title}</div>
-                    <div class="feature-icon">
-                        <i class="${caracteristica.icon}"></i>
-                    </div>
-                    <div class="click-info"></div>
-                `;
-                
-                card.addEventListener('click', () => mostrarInfoCaracteristica(caracteristica));
-                featuresContainer.appendChild(card);
-            });
-        }
-
-        // Mostrar información en modal
-        function mostrarInfoCaracteristica(caracteristica) {
-            modalTitle.textContent = caracteristica.title;
-            modalInfo.innerHTML = `<p>${caracteristica.info}</p>`;
-            modalImg.src = caracteristica.img;
-            modalImg.alt = caracteristica.title;
-            modal.style.display = 'block';
-        }
-
-        // Actualizar situación del juego
-        function actualizarSituacion() {
-            const situacion = situaciones[currentSituationIndex];
-            situationNumber.textContent = currentSituationIndex + 1;
-            totalSituations.textContent = situaciones.length;
-            situationText.textContent = `"${situacion.text}"`;
-            
-            // Resetear selección
-            selectedCompetency = null;
-            canSelect = true;
-            
-            // Obtener competencias aleatorias
-            const randomCompetencies = getRandomCompetencies(situacion.correctCompetencyId);
-            
-            // Generar tarjetas de competencias
-            competenciesContainer.innerHTML = '';
-            randomCompetencies.forEach(comp => {
-                const card = document.createElement('div');
-                card.className = 'competency-card';
-                card.dataset.competencyId = comp.id;
-                card.dataset.correct = comp.id === situacion.correctCompetencyId ? 'true' : 'false';
-                card.innerHTML = `
-                    <div class="competency-icon"><i class="${comp.icon}"></i></div>
-                    <div class="competency-text">"${comp.name}"</div>
-                    <div class="competency-desc">${comp.desc}</div>
-                `;
-                
-                card.addEventListener('click', () => verificarRespuesta(card));
-                competenciesContainer.appendChild(card);
-            });
-            
-            // Limpiar feedback
-            gameFeedback.textContent = "";
-            gameFeedback.className = "feedback";
-        }
-
-        // Verificar respuesta
-        function verificarRespuesta(card) {
-            if (!canSelect) return; // No permitir seleccionar después de responder
-            
-            const situacion = situaciones[currentSituationIndex];
-            const isCorrect = card.dataset.correct === 'true';
-            
-            // Deshabilitar todas las tarjetas
-            document.querySelectorAll('.competency-card').forEach(c => {
-                c.classList.add('disabled');
-            });
-            
-            // Marcar la seleccionada
-            card.classList.add('selected');
-            
-            // Actualizar estadísticas
-            attempts++;
-            if (isCorrect) {
-                score++;
-                gameFeedback.textContent = situacion.feedbackCorrect;
-                gameFeedback.className = "feedback correct";
-            } else {
-                const correctCompetency = competencies.find(c => c.id === situacion.correctCompetencyId);
-                gameFeedback.textContent = `❌ Incorrecto. Seleccionaste: "${card.querySelector('.competency-text').textContent}". La competencia correcta era: "${correctCompetency.name}". En CBLT, CADA situación requiere una competencia ESPECÍFICA.`;
-                gameFeedback.className = "feedback incorrect";
-            }
-            
-            canSelect = false;
-            updateStats();
-        }
-
-        // Navegación entre páginas
-        function cambiarPagina(pagina) {
-            page1.classList.remove('active');
-            page2.classList.remove('active');
-            
-            if (pagina === 1) {
-                page1.classList.add('active');
-                currentPage = 1;
-            } else {
-                page2.classList.add('active');
-                currentPage = 2;
-            }
-            
-            document.querySelectorAll('.page-indicator').forEach(indicator => {
-                indicator.textContent = `Página ${pagina} de 2`;
-            });
-        }
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            crearTarjetasCaracteristicas();
-            
-            // Configurar juego
-            totalSituations.textContent = situaciones.length;
-            resetGame();
-            
-            newSituationBtn.addEventListener('click', () => {
-                if (!canSelect) {
-                    // Si ya respondió, cambiar situación
-                    currentSituationIndex = (currentSituationIndex + 1) % situaciones.length;
-                    actualizarSituacion();
-                } else {
-                    // Si no ha respondido, preguntar si quiere cambiar
-                    if (confirm('¿Seguro que quieres cambiar de situación? Perderás tu oportunidad de responder esta.')) {
-                        currentSituationIndex = (currentSituationIndex + 1) % situaciones.length;
-                        actualizarSituacion();
-                    }
-                }
-            });
-            
-            resetGameBtn.addEventListener('click', resetGame);
-            
-            // Navegación
-            nextPageBtn.addEventListener('click', () => cambiarPagina(2));
-            prevPageBtn.addEventListener('click', () => cambiarPagina(1));
-            
             // Modal
-            closeBtn.addEventListener('click', () => {
-                modal.style.display = 'none';
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalText = modal.querySelector('.modal-text');
+            const closeModal = document.getElementById('modalClose');
+
+            function changeScene(index) {
+                if (index < 0 || index >= totalScenes) return;
+
+                scenes.forEach(s => s.classList.remove('active'));
+                indicators.forEach(i => i.classList.remove('active'));
+
+                scenes[index].classList.add('active');
+                if (indicators[index]) {
+                    indicators[index].classList.add('active');
+                }
+                current = index;
+
+                // Scroll to top of the scene
+                scenes[index].scrollTop = 0;
+            }
+
+            prev.addEventListener('click', () => {
+                if (current > 0) changeScene(current - 1);
             });
 
-            window.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
+            next.addEventListener('click', () => {
+                if (current < totalScenes - 1) changeScene(current + 1);
             });
-            
-            // Navegación con teclado
+
+            indicators.forEach((ind, idx) => {
+                ind.addEventListener('click', () => changeScene(idx));
+            });
+
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight' && currentPage === 1) {
-                    cambiarPagina(2);
-                } else if (e.key === 'ArrowLeft' && currentPage === 2) {
-                    cambiarPagina(1);
-                } else if (e.key === 'Escape') {
-                    modal.style.display = 'none';
-                }
+                if (e.key === 'ArrowLeft' && current > 0) changeScene(current - 1);
+                if (e.key === 'ArrowRight' && current < totalScenes - 1) changeScene(current +
+                    1);
             });
-            
-            // Navegación táctil
+
+            // Hover en fact items muestra info en modal
+            const factItems = document.querySelectorAll('.fact-item');
+            factItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    const info = this.getAttribute('data-info');
+                    if (info) {
+                        modalImage.style.display = 'none';
+                        modalText.style.display = 'block';
+                        modalText.innerHTML =
+                            `<strong style="color: var(--warning); font-size:1.2rem;">📌 Información adicional</strong><br><br>${info}`;
+                        modal.classList.add('active');
+                    }
+                });
+                item.addEventListener('mouseleave', () => {
+                    modal.classList.remove('active');
+                });
+            });
+
+            closeModal.addEventListener('click', () => modal.classList.remove('active'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+
+            // Elementos flotantes interactivos
+            const interactive = document.querySelectorAll('.interactive-element');
+            interactive.forEach(el => {
+                el.addEventListener('click', function() {
+                    this.style.animation = 'none';
+                    this.style.transform = 'scale(1.4)';
+                    this.style.background = 'rgba(255,107,74,0.7)';
+                    setTimeout(() => {
+                        this.style.animation = 'float 5s infinite ease-in-out';
+                        this.style.transform = '';
+                        this.style.background = 'rgba(255, 107, 74, 0.2)';
+                    }, 300);
+                });
+            });
+
+            // Soporte para swipe en móviles
             let touchStartX = 0;
             let touchEndX = 0;
-            
+
             document.addEventListener('touchstart', (e) => {
                 touchStartX = e.changedTouches[0].screenX;
             });
-            
+
             document.addEventListener('touchend', (e) => {
                 touchEndX = e.changedTouches[0].screenX;
                 const diff = touchStartX - touchEndX;
-                
-                if (diff > 50 && currentPage === 2) {
-                    cambiarPagina(1);
-                } else if (diff < -50 && currentPage === 1) {
-                    cambiarPagina(2);
+
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0 && current < totalScenes - 1) {
+                        changeScene(current + 1);
+                    } else if (diff < 0 && current > 0) {
+                        changeScene(current - 1);
+                    }
                 }
             });
-        });
+
+            console.log('✅ Presentación lista: Falacia de Cambio + Etiquetas Globales');
+            console.log('📌 Temas: 2 | Escenas: 10 | Navegación: Flechas, indicadores o teclado');
+            console.log('💡 Pasa el cursor sobre los items para ver más información');
+        })();
     </script>
 </body>
 </html>
