@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Distorsiones Cognitivas · Falacia de Cambio y Etiquetas Globales</title>
+    <title>🎯 English Idioms Game · Adivina el Significado</title>
     <style>
         * {
             margin: 0;
@@ -13,1615 +13,921 @@
         }
 
         :root {
-            --primary: #ff6b4a;
-            --secondary: #2c3e66;
-            --accent: #7c8ee6;
-            --dark: #121826;
-            --light: #f4f6ff;
-            --warning: #ffb347;
-            --success: #4ecdc4;
-            --danger: #ff4757;
-            --purple: #a55eea;
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #00cec9;
+            --dark: #2d3436;
+            --light: #dfe6e9;
+            --warning: #fdcb6e;
+            --success: #00b894;
+            --danger: #e17055;
+            --pink: #fd79a8;
         }
 
         body {
-            background: linear-gradient(135deg, #0a0e1a, #1a1f2e);
+            background: linear-gradient(135deg, #0c0c1d, #1a1a3e, #0c0c1d);
             color: var(--light);
-            overflow: hidden;
-            height: 100vh;
-            height: 100dvh; /* Dynamic viewport height for mobile */
-            perspective: 1000px;
-            -webkit-overflow-scrolling: touch;
-            touch-action: pan-x pan-y;
-        }
-
-        #scene-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .scene {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            opacity: 0;
-            transform: translateZ(-500px) rotateY(90deg);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-            pointer-events: none;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .scene.active {
-            opacity: 1;
-            transform: translateZ(0) rotateY(0);
-            pointer-events: all;
-        }
-
-        /* Mejor scroll para móviles */
-        .scene::-webkit-scrollbar {
-            width: 5px;
-        }
-        .scene::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        .scene::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-
-        .scene-title {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            background: linear-gradient(90deg, var(--primary), var(--warning));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 5px 15px rgba(255, 107, 74, 0.3);
-            letter-spacing: 1px;
-            word-break: break-word;
-        }
-
-        .theme-badge {
-            display: inline-block;
-            padding: 0.5rem 2rem;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .badge-cambio {
-            background: rgba(255, 107, 74, 0.2);
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .badge-etiquetas {
-            background: rgba(124, 142, 230, 0.2);
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .section-divider {
-            width: 90%;
-            max-width: 1200px;
-            text-align: center;
-            margin: 1rem auto;
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .divider-line {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), var(--purple), transparent);
-            transform: translateY(-50%);
-        }
-
-        .divider-text {
-            position: relative;
-            display: inline-block;
-            background: var(--dark);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--warning);
-            border: 2px solid var(--warning);
-            z-index: 1;
-            max-width: 90%;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            width: 90%;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        .info-panel {
-            background: rgba(18, 24, 38, 0.85);
-            border-radius: 24px;
-            padding: 1.8rem;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 107, 74, 0.3);
-            backdrop-filter: blur(12px);
-            transform: translateY(50px);
-            opacity: 0;
-            transition: all 0.6s ease-out;
-        }
-
-        .scene.active .info-panel {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .panel-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.2rem;
-            color: var(--accent);
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 0.5rem;
-            display: inline-block;
-        }
-
-        .fact-list {
-            list-style: none;
-        }
-
-        .fact-item {
-            padding: 0.9rem 1.1rem;
-            margin-bottom: 0.7rem;
-            background: rgba(124, 142, 230, 0.08);
-            border-radius: 14px;
-            border-left: 5px solid var(--primary);
-            transition: all 0.25s;
-            cursor: pointer;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-
-        .fact-item:hover {
-            transform: translateX(12px);
-            background: rgba(255, 107, 74, 0.15);
-            border-left-color: var(--warning);
-        }
-
-        .fact-item strong {
-            color: var(--warning);
-        }
-
-        .visualization {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-        }
-
-        .model-card {
-            width: 100%;
-            max-width: 380px;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
-            border: 2px solid var(--primary);
-            background: rgba(0, 0, 0, 0.4);
-        }
-
-        .model-inner {
-            width: 100%;
-            height: auto;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .model-icon {
-            font-size: 5rem;
-            margin: 0.5rem;
-        }
-
-        .img-placeholder {
-            width: 100%;
-            height: auto;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #2a2a4a, #1a1a3a);
-            border-radius: 16px;
-            min-height: 220px;
-            flex-direction: column;
-            gap: 10px;
-            color: var(--accent);
             padding: 1rem;
         }
 
-        .stats-display {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+        .game-container {
             width: 100%;
-            margin-top: 0.5rem;
-        }
-
-        .stat {
-            background: rgba(44, 62, 102, 0.7);
-            border-radius: 16px;
-            padding: 1rem 0.5rem;
-            text-align: center;
-            transition: 0.2s;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat:hover {
-            transform: scale(1.02);
-            background: rgba(255, 107, 74, 0.7);
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.3rem;
-            line-height: 1.2;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--light);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .comparison-container {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            width: 100%;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .comparison-item {
-            text-align: center;
-            padding: 1rem;
-            border-radius: 20px;
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--accent);
-            transition: 0.2s;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .comparison-item:hover {
-            background: rgba(124, 142, 230, 0.2);
-            transform: translateY(-6px);
-        }
-
-        .comparison-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: var(--warning);
-        }
-
-        /* Navegación optimizada para móvil */
-        .navigation-3d {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 1.5rem;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: rgba(255, 107, 74, 0.85);
-            border: none;
-            color: white;
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: all 0.25s;
-            box-shadow: 0 5px 20px rgba(255, 107, 74, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-
-        .nav-btn:hover {
-            transform: scale(1.1);
-            background: rgba(255, 80, 50, 1);
-            box-shadow: 0 8px 25px rgba(255, 107, 74, 0.8);
-        }
-
-        .nav-btn:active {
-            transform: scale(0.9);
-        }
-
-        .nav-btn::before {
-            content: "←";
-        }
-
-        #next-btn::before {
-            content: "→";
-        }
-
-        /* Indicadores de escena mejorados */
-        .scene-indicators {
-            position: fixed;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            z-index: 100;
-        }
-
-        .scene-indicator {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: all 0.3s;
+            max-width: 800px;
             position: relative;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
-        .scene-indicator.active {
-            background: var(--primary);
-            transform: scale(1.5);
-            box-shadow: 0 0 15px var(--primary);
-        }
-
-        .scene-indicator.divider-indicator {
-            width: 18px;
-            height: 18px;
-            border: 3px solid var(--warning);
-            background: transparent;
-        }
-
-        .scene-indicator.divider-indicator::after {
-            content: attr(data-title);
-            position: absolute;
-            right: 28px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(10, 10, 20, 0.95);
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            border: 1px solid var(--warning);
-            color: var(--warning);
-            font-weight: 600;
-        }
-
-        .scene-indicator::after {
-            content: attr(data-title);
-            position: absolute;
-            right: 28px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(10, 10, 20, 0.95);
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            border: 1px solid var(--primary);
-            color: var(--light);
-            font-weight: 500;
-        }
-
-        .scene-indicator:hover::after {
-            opacity: 1;
-        }
-
-        .interactive-element {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(255, 107, 74, 0.2);
-            display: flex;
-            justify-content: center;
+        .screen {
+            display: none;
+            flex-direction: column;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.4s;
-            animation: float 5s infinite ease-in-out;
-            border: 2px dashed var(--warning);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .interactive-element:hover {
-            background: rgba(255, 107, 74, 0.5);
-            transform: scale(1.25);
-            border: 2px solid var(--primary);
-        }
-
-        .element-1 {
-            top: 8%;
-            left: 12%;
-            animation-delay: 0s;
-        }
-        .element-2 {
-            top: 82%;
-            right: 10%;
-            animation-delay: 1.2s;
-        }
-        .element-3 {
-            bottom: 12%;
-            left: 18%;
-            animation-delay: 2s;
-        }
-
-        .mini-fact {
-            font-size: 0.85rem;
+            justify-content: center;
             text-align: center;
-            padding: 0.5rem;
-            font-weight: 600;
-            color: white;
-            text-shadow: 0 0 5px black;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.08); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(5px); }
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
         @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(5deg);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
-        .image-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.3s;
+        @keyframes correctGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 184, 148, 0.6); }
+            50% { box-shadow: 0 0 35px rgba(0, 184, 148, 1), 0 0 70px rgba(0, 184, 148, 0.5); }
         }
 
-        .image-modal.active {
-            opacity: 1;
-            visibility: visible;
+        @keyframes wrongMark {
+            0% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            100% { transform: translateX(0); }
         }
 
-        .modal-content {
-            position: relative;
-            max-width: 90vw;
-            max-height: 80vh;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 0 40px var(--primary);
-            transform: scale(0.8);
-            transition: 0.3s;
-            background: #1a1f2e;
-            padding: 20px;
-            text-align: center;
+        @keyframes successPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.3); }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); }
         }
 
-        .image-modal.active .modal-content {
-            transform: scale(1);
+        @keyframes rainbowBorder {
+            0% { border-color: #ff6b6b; }
+            25% { border-color: #feca57; }
+            50% { border-color: #48dbfb; }
+            75% { border-color: #ff9ff3; }
+            100% { border-color: #54a0ff; }
         }
 
-        .modal-image {
-            max-width: 100%;
-            max-height: 60vh;
-            border-radius: 12px;
-            display: none;
+        .start-screen {
+            gap: 2rem;
+            padding: 2rem;
         }
 
-        .modal-text {
-            padding: 1rem;
-            color: white;
-            max-width: 100%;
-            font-size: 1.1rem;
+        .game-logo {
+            font-size: 5rem;
+            animation: float 3s infinite ease-in-out;
+            filter: drop-shadow(0 10px 20px rgba(108, 92, 231, 0.5));
+        }
+
+        .game-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--secondary), var(--pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .game-subtitle {
+            font-size: 1.2rem;
+            color: var(--light);
+            opacity: 0.8;
+            max-width: 500px;
             line-height: 1.6;
         }
 
-        .modal-close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: rgba(255, 107, 74, 0.9);
-            color: white;
+        .idioms-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        .idiom-chip {
+            background: rgba(108, 92, 231, 0.2);
+            border: 1px solid var(--secondary);
+            border-radius: 30px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            animation: float 2s infinite ease-in-out;
+        }
+        .idiom-chip:nth-child(2) { animation-delay: 0.3s; }
+        .idiom-chip:nth-child(3) { animation-delay: 0.6s; }
+        .idiom-chip:nth-child(4) { animation-delay: 0.9s; }
+        .idiom-chip:nth-child(5) { animation-delay: 1.2s; }
+
+        .btn {
+            padding: 1rem 2.5rem;
             border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(108, 92, 231, 0.7); }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-next {
+            background: linear-gradient(135deg, var(--success), #55efc4);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.5);
+            animation: bounceIn 0.5s;
+        }
+        .btn-next:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(0, 184, 148, 0.7); }
+        .btn-restart {
+            background: linear-gradient(135deg, var(--warning), var(--danger));
+            color: white;
+            box-shadow: 0 8px 25px rgba(253, 203, 110, 0.5);
+        }
+        .btn-restart:hover { transform: translateY(-3px); }
+
+        .question-screen {
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .question-counter {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            letter-spacing: 2px;
+        }
+
+        /* Contador de intentos */
+        .attempts-display {
+            display: flex;
+            gap: 0.4rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .attempt-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--success);
+            transition: all 0.3s;
+        }
+        .attempt-dot.lost {
+            background: var(--danger);
+            animation: successPop 0.4s;
+        }
+        .attempt-label {
+            font-size: 0.8rem;
+            color: var(--light);
+            opacity: 0.6;
+            margin-left: 0.5rem;
+        }
+
+        .idiom-display {
+            background: rgba(108, 92, 231, 0.1);
+            border: 2px solid var(--secondary);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            position: relative;
+            transition: all 0.5s;
+        }
+        .idiom-display.celebrating {
+            animation: rainbowBorder 1s infinite;
+        }
+        .idiom-emoji {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+            animation: float 2s infinite ease-in-out;
+        }
+        .idiom-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--warning);
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+        .idiom-literal {
+            font-size: 0.9rem;
+            color: var(--light);
+            opacity: 0.6;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            width: 100%;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: var(--light);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            position: relative;
+            overflow: hidden;
+        }
+        .option-btn:not(.wrong):not(.correct):hover {
+            background: rgba(108, 92, 231, 0.2);
+            border-color: var(--secondary);
+            transform: translateX(8px);
+        }
+        .option-btn:active { transform: scale(0.98); }
+
+        .option-letter {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            font-size: 1.8rem;
-            cursor: pointer;
+            background: rgba(108, 92, 231, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
-            line-height: 1;
-            -webkit-tap-highlight-color: transparent;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            transition: all 0.3s;
         }
 
-        .modal-close:hover {
-            background: red;
-            transform: scale(1.1);
+        /* Estados de opciones */
+        .option-btn.wrong {
+            background: rgba(225, 112, 85, 0.3) !important;
+            border-color: var(--danger) !important;
+            animation: wrongMark 0.5s;
+            pointer-events: none;
+            opacity: 0.7;
         }
-
-        .example-box {
-            background: rgba(255, 180, 71, 0.15);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-            border-left: 4px solid var(--warning);
-            word-break: break-word;
+        .option-btn.wrong .option-letter {
+            background: var(--danger);
+            color: white;
         }
-
-        .example-title {
-            color: var(--warning);
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .quote-box {
-            background: rgba(124, 142, 230, 0.1);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-            border: 1px solid var(--accent);
-            font-style: italic;
-            text-align: center;
-            word-break: break-word;
-        }
-
-        .highlight-text {
-            color: var(--success);
-            font-weight: bold;
-        }
-
-        .danger-text {
+        .option-btn.wrong::after {
+            content: '✕';
+            position: absolute;
+            right: 1.2rem;
+            font-size: 1.3rem;
             color: var(--danger);
             font-weight: bold;
         }
 
-        /* ======================================== */
-        /* ESTILOS RESPONSIVE PARA MÓVILES          */
-        /* ======================================== */
-        @media (max-width: 1024px) {
-            .content-grid {
-                gap: 1.5rem;
-                width: 95%;
-            }
-            
-            .scene-title {
-                font-size: 2.5rem;
-                margin-bottom: 1.5rem;
-            }
-            
-            .panel-title {
-                font-size: 1.5rem;
-            }
+        .option-btn.correct {
+            background: rgba(0, 184, 148, 0.3) !important;
+            border-color: var(--success) !important;
+            animation: correctGlow 1s ease-in-out 3, successPop 0.6s;
+            pointer-events: none;
+        }
+        .option-btn.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+        .option-btn.correct::after {
+            content: '✓';
+            position: absolute;
+            right: 1.2rem;
+            font-size: 1.5rem;
+            color: var(--success);
+            font-weight: bold;
+            animation: bounceIn 0.5s;
         }
 
-        @media (max-width: 900px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                width: 92%;
-            }
-            
-            .scene {
-                padding: 1.5rem 1rem;
-                justify-content: flex-start;
-                padding-top: 2rem;
-            }
-            
-            .scene-title {
-                font-size: 2.2rem;
-                margin-bottom: 1.2rem;
-                line-height: 1.2;
-            }
-            
-            .panel-title {
-                font-size: 1.5rem;
-            }
-            
-            .info-panel {
-                padding: 1.3rem;
-            }
-            
-            .visualization {
-                order: -1;
-            }
-            
-            .model-card {
-                max-width: 300px;
-            }
-            
-            .model-icon {
-                font-size: 4rem;
-            }
-            
-            .img-placeholder {
-                min-height: 180px;
-            }
-            
-            .stats-display {
-                gap: 0.8rem;
-            }
-            
-            .stat {
-                padding: 0.8rem 0.4rem;
-            }
-            
-            .stat-value {
-                font-size: 1.5rem;
-            }
-            
-            .stat-label {
-                font-size: 0.75rem;
-            }
-            
-            .fact-item {
-                padding: 0.8rem 1rem;
-                font-size: 0.95rem;
-            }
-            
-            .comparison-container {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-            
-            .comparison-item {
-                min-width: auto;
-                padding: 0.8rem;
-            }
-            
-            .comparison-title {
-                font-size: 1rem;
-            }
-            
-            .navigation-3d {
-                bottom: 1.5rem;
-                gap: 1rem;
-            }
-            
-            .nav-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 1.8rem;
-            }
-            
-            .scene-indicators {
-                right: 0.3rem;
-                gap: 0.5rem;
-            }
-            
-            .scene-indicator {
-                width: 12px;
-                height: 12px;
-            }
-            
-            .scene-indicator.divider-indicator {
-                width: 16px;
-                height: 16px;
-            }
-            
-            .scene-indicator::after,
-            .scene-indicator.divider-indicator::after {
-                display: none;
-            }
-            
-            .interactive-element {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .mini-fact {
-                font-size: 0.7rem;
-                padding: 0.3rem;
-            }
-            
-            .element-1 {
-                top: 5%;
-                left: 5%;
-            }
-            .element-2 {
-                top: 90%;
-                right: 5%;
-            }
-            .element-3 {
-                bottom: 8%;
-                left: 5%;
-            }
-            
-            .section-divider {
-                padding: 1.5rem 0;
-            }
-            
-            .divider-text {
-                font-size: 1rem;
-                padding: 0.6rem 1.5rem;
-            }
-            
-            .theme-badge {
-                font-size: 0.75rem;
-                padding: 0.4rem 1.2rem;
-                letter-spacing: 1px;
-            }
+        /* Feedback overlay - solo para acierto */
+        .feedback-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .feedback-overlay.show { opacity: 1; }
+
+        .feedback-card {
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            animation: bounceIn 0.6s;
+            border: 3px solid var(--success);
+            max-width: 420px;
+            width: 90%;
+        }
+        .feedback-emoji { font-size: 5rem; display: block; animation: float 1s infinite ease-in-out; }
+        .feedback-text { font-size: 1.4rem; margin: 1rem 0; font-weight: 700; color: var(--success); }
+
+        /* Indicador de intentos en el feedback */
+        .feedback-attempts {
+            font-size: 0.9rem;
+            color: var(--warning);
+            margin-top: 0.5rem;
         }
 
+        /* Results */
+        .results-screen { gap: 1.5rem; padding: 1rem; }
+
+        .score-circle {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success) var(--score-percent), rgba(255,255,255,0.1) 0);
+            display: flex; align-items: center; justify-content: center;
+            animation: bounceIn 0.8s;
+        }
+        .score-inner {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: var(--dark);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .score-number { font-size: 3rem; font-weight: 800; color: var(--warning); }
+        .score-total { font-size: 1rem; color: var(--light); opacity: 0.7; }
+        .results-message { font-size: 1.3rem; text-align: center; line-height: 1.6; }
+
+        .results-detail {
+            display: flex; flex-direction: column;
+            gap: 0.8rem; width: 100%;
+        }
+        .result-item {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 0.8rem 1rem; border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+        }
+        .result-icon { font-size: 1.5rem; width: 35px; text-align: center; }
+        .result-idiom { flex: 1; font-size: 0.9rem; }
+        .result-answer { color: var(--accent); font-size: 0.85rem; }
+        .result-attempts {
+            font-size: 0.75rem;
+            color: var(--warning);
+            background: rgba(253, 203, 110, 0.15);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        /* Confeti */
+        .confetti-container {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 200;
+        }
+        .confetti-piece {
+            position: absolute;
+            animation: confettiFall 3s linear forwards;
+        }
+
+        /* Mensaje flotante de "incorrecto" */
+        .floating-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--danger);
+            pointer-events: none;
+            z-index: 50;
+            animation: floatUp 1.5s forwards;
+            text-shadow: 0 0 20px rgba(225, 112, 85, 0.5);
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+            30% { opacity: 1; transform: translate(-50%, -70%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -120%) scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-title { font-size: 2rem; }
+            .idiom-text { font-size: 1.5rem; }
+            .idiom-emoji { font-size: 3rem; }
+            .option-btn { padding: 1rem; font-size: 0.9rem; }
+            .option-letter { width: 35px; height: 35px; font-size: 0.9rem; }
+            .btn { padding: 0.8rem 2rem; font-size: 1rem; }
+            .score-circle { width: 120px; height: 120px; }
+            .score-inner { width: 95px; height: 95px; }
+            .score-number { font-size: 2.5rem; }
+            .feedback-card { padding: 1.8rem; }
+            .feedback-emoji { font-size: 3.5rem; }
+        }
         @media (max-width: 480px) {
-            .scene {
-                padding: 1rem 0.8rem;
-                padding-top: 1.5rem;
-            }
-            
-            .scene-title {
-                font-size: 1.8rem;
-                margin-bottom: 1rem;
-            }
-            
-            .content-grid {
-                width: 96%;
-                gap: 1rem;
-            }
-            
-            .info-panel {
-                padding: 1rem;
-                border-radius: 20px;
-            }
-            
-            .panel-title {
-                font-size: 1.3rem;
-            }
-            
-            .fact-item {
-                padding: 0.7rem 0.9rem;
-                margin-bottom: 0.5rem;
-                font-size: 0.9rem;
-                border-radius: 12px;
-            }
-            
-            .model-card {
-                max-width: 250px;
-                border-radius: 22px;
-            }
-            
-            .model-inner {
-                padding: 1rem;
-            }
-            
-            .model-icon {
-                font-size: 3rem;
-            }
-            
-            .img-placeholder {
-                min-height: 150px;
-                padding: 0.8rem;
-                font-size: 0.9rem;
-            }
-            
-            .stat-value {
-                font-size: 1.3rem;
-            }
-            
-            .stat-label {
-                font-size: 0.7rem;
-            }
-            
-            .stats-display {
-                gap: 0.6rem;
-            }
-            
-            .stat {
-                padding: 0.7rem 0.3rem;
-                border-radius: 14px;
-            }
-            
-            .nav-btn {
-                width: 48px;
-                height: 48px;
-                font-size: 1.5rem;
-                border-radius: 50%;
-            }
-            
-            .navigation-3d {
-                bottom: 1rem;
-                gap: 0.8rem;
-            }
-            
-            .interactive-element {
-                width: 55px;
-                height: 55px;
-                border-radius: 50%;
-            }
-            
-            .mini-fact {
-                font-size: 0.65rem;
-            }
-            
-            .comparison-item {
-                padding: 0.7rem;
-                border-radius: 16px;
-            }
-            
-            .comparison-title {
-                font-size: 0.9rem;
-            }
-            
-            .example-box,
-            .quote-box {
-                padding: 0.8rem;
-                margin-top: 0.8rem;
-            }
-            
-            .example-title {
-                font-size: 0.8rem;
-            }
-            
-            .modal-content {
-                max-width: 95vw;
-                padding: 15px;
-            }
-            
-            .modal-text {
-                font-size: 1rem;
-                padding: 0.5rem;
-            }
-            
-            .modal-close {
-                width: 35px;
-                height: 35px;
-                font-size: 1.5rem;
-                top: 8px;
-                right: 10px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .scene-title {
-                font-size: 1.5rem;
-            }
-            
-            .panel-title {
-                font-size: 1.1rem;
-            }
-            
-            .fact-item {
-                font-size: 0.85rem;
-                padding: 0.6rem 0.8rem;
-            }
-            
-            .model-card {
-                max-width: 220px;
-            }
-            
-            .model-icon {
-                font-size: 2.5rem;
-            }
-            
-            .nav-btn {
-                width: 42px;
-                height: 42px;
-                font-size: 1.3rem;
-            }
-            
-            .interactive-element {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .mini-fact {
-                font-size: 0.6rem;
-            }
-        }
-
-        /* Ajustes para orientación landscape en móviles */
-        @media (max-width: 900px) and (orientation: landscape) {
-            .scene {
-                padding-top: 1rem;
-            }
-            
-            .content-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
-            
-            .scene-title {
-                font-size: 1.6rem;
-                margin-bottom: 0.8rem;
-            }
-            
-            .model-card {
-                max-width: 200px;
-            }
-            
-            .model-icon {
-                font-size: 2.5rem;
-            }
-            
-            .img-placeholder {
-                min-height: 120px;
-            }
-            
-            .info-panel {
-                padding: 0.8rem;
-            }
-            
-            .fact-item {
-                padding: 0.5rem 0.7rem;
-                font-size: 0.8rem;
-                margin-bottom: 0.4rem;
-            }
-            
-            .navigation-3d {
-                bottom: 0.8rem;
-            }
-            
-            .nav-btn {
-                width: 42px;
-                height: 42px;
-            }
-            
-            .interactive-element {
-                display: none;
-            }
+            .game-title { font-size: 1.6rem; }
+            .idiom-text { font-size: 1.3rem; }
+            .idiom-emoji { font-size: 2.5rem; }
+            .option-btn { padding: 0.8rem 1rem; font-size: 0.85rem; gap: 0.6rem; }
+            .option-letter { width: 30px; height: 30px; font-size: 0.8rem; }
+            .idiom-display { padding: 1.5rem; }
+            .game-logo { font-size: 3.5rem; }
+            .option-btn.wrong::after,
+            .option-btn.correct::after { right: 0.8rem; font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="image-modal" id="imageModal">
-        <div class="modal-content">
-            <img class="modal-image" id="modalImage" src="" alt="Información adicional">
-            <div class="modal-text"></div>
-            <button class="modal-close" id="modalClose">×</button>
+
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <div class="feedback-overlay" id="feedbackOverlay">
+        <div class="feedback-card">
+            <span class="feedback-emoji" id="feedbackEmoji">🎉</span>
+            <div class="feedback-text" id="feedbackText">¡Correcto!</div>
+            <div class="feedback-attempts" id="feedbackAttempts"></div>
         </div>
     </div>
 
-    <div id="scene-container">
-        <!-- ═══════════════════════════════════════════ -->
-        <!-- TEMA 1: FALACIA DE CAMBIO (Escenas 1-4)  -->
-        <!-- ═══════════════════════════════════════════ -->
+    <div class="game-container">
 
-        <!-- SCENE 1: Definición y concepto de Falacia de Cambio -->
-        <div class="scene active" id="scene1">
-            <div class="theme-badge badge-cambio">Tema 1 · Distorsión Cognitiva</div>
-            <h1 class="scene-title">🌀 FALACIA DE CAMBIO</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">📖 ¿Qué es esta distorsión?</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="La Falacia de Cambio es una distorsión cognitiva identificada por el psiquiatra Aaron Beck. Consiste en creer que nuestra felicidad depende de que otras personas cambien su forma de ser o actuar.">
-                            <strong>Definición:</strong> Creer que <strong>nuestra felicidad depende</strong> de que los demás cambien para ajustarse a lo que nosotros esperamos o necesitamos.
-                        </li>
-                        <li class="fact-item" data-info="Parte de una expectativa irreal: pensamos que si ejercemos suficiente presión, insistencia, amor o manipulación, lograremos que la otra persona modifique su comportamiento, hábitos o personalidad.">
-                            Se basa en la expectativa <strong>irreal</strong> de que podemos controlar o moldear a otros si insistimos lo suficiente.
-                        </li>
-                        <li class="fact-item" data-info="La persona que cae en esta falacia se convence de que 'si tan solo él/ella cambiara, yo sería feliz', depositando su bienestar en manos ajenas.">
-                            El pensamiento central es: <strong>"Si tan solo él/ella cambiara... yo sería feliz."</strong>
-                        </li>
-                        <li class="fact-item" data-info="Esta distorsión es muy común en relaciones de pareja, familiares y laborales. Nos hace creer que tenemos el poder y el derecho de modificar a los demás.">
-                            Es muy común en <strong>relaciones de pareja, familiares y laborales.</strong>
-                        </li>
-                    </ul>
-                    <div class="example-box">
-                        <div class="example-title">💭 Ejemplo clásico</div>
-                        "El me pega, pero <strong>me dijo que va a cambiar</strong>."<br>
-                        "El me prometio, <strong>que ya no me lastimaria mas</strong>."
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">🔄</div>
-                                <p style="color: var(--accent); font-size:1.1rem;">"Esperar que otros cambien<br>para que yo esté bien"</p>
-                                <p style="color: var(--warning); font-size:0.9rem;">→ Expectativa irreal</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-display">
-                        <div class="stat"><div class="stat-value">🎭</div><div class="stat-label">Control ilusorio</div></div>
-                        <div class="stat"><div class="stat-value">💔</div><div class="stat-label">Frustración</div></div>
-                        <div class="stat"><div class="stat-value">🔄</div><div class="stat-label">Espera infinita</div></div>
-                        <div class="stat"><div class="stat-value">🧠</div><div class="stat-label">Distorsión cognitiva</div></div>
-                    </div>
-                </div>
+        <!-- INICIO -->
+        <div class="screen start-screen active" id="startScreen">
+            <div class="game-logo">🎯</div>
+            <h1 class="game-title">ENGLISH IDIOMS</h1>
+            <p class="game-subtitle">
+                <br>
+                Elige la traducción correcta. ¡Puedes intentar hasta encontrarla!
+            </p>
+            <div class="idioms-preview">
+                <span class="idiom-chip">🐆 Leopard spots</span>
+                <span class="idiom-chip">🎭 Blessing in disguise</span>
+                <span class="idiom-chip">💰 Fool's money</span>
+                <span class="idiom-chip">🐷 Pig lipstick</span>
+                <span class="idiom-chip">👑 Man's home castle</span>
             </div>
-            <div class="interactive-element element-1"><div class="mini-fact">"Con mi amor cambiará"</div></div>
+            <button class="btn btn-primary" onclick="startGame()">▶ ¡COMENZAR!</button>
         </div>
 
-        <!-- SCENE 2: Más ejemplos y contextos -->
-        <div class="scene" id="scene2">
-            <div class="theme-badge badge-cambio">Tema 1 · Falacia de Cambio</div>
-            <h1 class="scene-title">💔 EJEMPLOS EN LA VIDA REAL</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">📌 Situaciones cotidianas</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="En relaciones románticas: 'Es celoso, pero cuando se dé cuenta de que lo amo de verdad, cambiará'. 'Bebe mucho, pero cuando tengamos hijos sentará cabeza'. Son creencias muy peligrosas.">
-                            <strong>💕 En las relaciones:</strong> "Es celoso/a y agresivo/a, pero cuando vea que lo quiero cambiará." / "Cuando tengamos hijos, sera otra persona."
-                        </li>
-                        <li class="fact-item" data-info="En la familia: 'Si le reclamo cada día, mi mamá entenderá mi punto de vista y cambiará su actitud'. 'Mi hermano debería ser más organizado, como yo'.">
-                            <strong>👨‍👩‍👧 En la familia:</strong> "Si le insisto cada día, mi primo dejara de drogarse." / "Mi hermano debería ser más como yo."
-                        </li>
-                        <li class="fact-item" data-info="En el trabajo o la escuela: 'Mi jefe debería ser más comprensivo conmigo'. 'Los demás en el equipo deberían trabajar con mi mismo nivel de exigencia'.">
-                            <strong>💼 En el trabajo:</strong> "Mi jefe debería reconocer mi esfuerzo sin que yo se lo pida." / "Mis compañeros deberían ser más responsables."
-                        </li>
-                        <li class="fact-item" data-info="En amistades: 'Si soy un buen amigo, él/ella dejará de ser tan egoísta y me valorará más'. Esperamos reciprocidad exacta.">
-                            <strong>🤝 En la amistad:</strong> "Si soy buen amigo, él dejará de ser tan egoísta." / "El/Ella debería llamarme más seguido."
-                        </li>
-                    </ul>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">👩‍❤️‍👨</div>
-                                <p style="color: var(--warning); font-size:1.1rem;">"Yo puedo cambiarlo/a"</p>
-                                <p style="color: var(--danger); font-size:0.9rem;">⚠️ Pensamiento peligroso</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="comparison-container">
-                        <div class="comparison-item">
-                            <h3 class="comparison-title">❌ Pensamiento erróneo</h3>
-                            "Si él/ella cambiara,<br>todo sería perfecto"
-                        </div>
-                        <div class="comparison-item">
-                            <h3 class="comparison-title">✅ Pensamiento realista</h3>
-                            "Lo acepto como es<br>o tomo distancia"
-                        </div>
-                    </div>
-                </div>
+        <!-- PREGUNTA -->
+        <div class="screen question-screen" id="questionScreen">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <p class="question-counter" id="questionCounter">Pregunta 1 de 5</p>
+            <div class="attempts-display" id="attemptsDisplay">
+                <span class="attempt-label">Intentos:</span>
+                <div class="attempt-dot" id="dot1"></div>
+                <div class="attempt-dot" id="dot2"></div>
+                <div class="attempt-dot" id="dot3"></div>
+                <div class="attempt-dot" id="dot4"></div>
             </div>
-            <div class="interactive-element element-2"><div class="mini-fact">"Cuando nos casemos, cambiará"</div></div>
+            <div class="idiom-display" id="idiomDisplay">
+                <span class="idiom-emoji" id="idiomEmoji"></span>
+                <h2 class="idiom-text" id="idiomText"></h2>
+                <p class="idiom-literal" id="idiomLiteral"></p>
+            </div>
+            <div class="options-grid" id="optionsGrid"></div>
+            <button class="btn btn-next" id="nextBtn" style="display:none" onclick="nextQuestion()">SIGUIENTE →</button>
         </div>
 
-        <!-- SCENE 3: Consecuencias negativas -->
-        <div class="scene" id="scene3">
-            <div class="theme-badge badge-cambio">Tema 1 · Falacia de Cambio</div>
-            <h1 class="scene-title">⚠️ CONSECUENCIAS NEGATIVAS</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">🩹 ¿Por qué es tan dañino?</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="La relación se convierte en un campo de batalla. Una persona presiona y exige cambios; la otra se siente controlada, juzgada e insuficiente. Esto genera resentimiento mutuo.">
-                            <strong>Relaciones tóxicas:</strong> La dinámica se vuelve insana: uno presiona, el otro se siente <strong>juzgado y controlado</strong>. Se genera resentimiento.
-                        </li>
-                        <li class="fact-item" data-info="Como los demás rara vez actúan según nuestro guión, vivimos en un estado de frustración crónica, enojo y decepción constante.">
-                            <strong>Frustración constante:</strong> Vivimos <strong>enojados o decepcionados</strong> porque los demás no siguen nuestro guion.
-                        </li>
-                        <li class="fact-item" data-info="Al depositar nuestra felicidad en las acciones de otros, les entregamos el control de nuestro bienestar emocional. Nos volvemos dependientes.">
-                            <strong>Pérdida de control:</strong> Le <strong>regalamos a otros</strong> el poder sobre nuestra felicidad y bienestar.
-                        </li>
-                        <li class="fact-item" data-info="Mientras estamos obsesionados con cambiar a los demás, no trabajamos en nosotros mismos ni en lo que sí está bajo nuestro control.">
-                            <strong>Estancamiento personal:</strong> Dejamos de trabajar en <strong>nuestro propio crecimiento</strong> por estar enfocados en cambiar a otros.
-                        </li>
-                    </ul>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">🔗</div>
-                                <p style="color: var(--danger); font-size:1.1rem;">"Atrapados esperando<br>que otros cambien"</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-display">
-                        <div class="stat"><div class="stat-value">😤</div><div class="stat-label">Enojo</div></div>
-                        <div class="stat"><div class="stat-value">😢</div><div class="stat-label">Decepción</div></div>
-                        <div class="stat"><div class="stat-value">🔒</div><div class="stat-label">Dependencia</div></div>
-                        <div class="stat"><div class="stat-value">🚫</div><div class="stat-label">Estancamiento</div></div>
-                    </div>
+        <!-- RESULTADOS -->
+        <div class="screen results-screen" id="resultsScreen">
+            <div class="game-logo">🏆</div>
+            <h1 class="game-title">¡RESULTADOS!</h1>
+            <div class="score-circle" id="scoreCircle">
+                <div class="score-inner">
+                    <span class="score-number" id="scoreNumber">0</span>
+                    <span class="score-total">/ 5</span>
                 </div>
             </div>
+            <p class="results-message" id="resultsMessage"></p>
+            <div class="results-detail" id="resultsDetail"></div>
+            <button class="btn btn-restart" onclick="restartGame()">🔄 Inicio</button>
         </div>
 
-        <!-- SCENE 4: Soluciones y cierre Tema 1 -->
-        <div class="scene" id="scene4">
-            <div class="theme-badge badge-cambio">Tema 1 · Falacia de Cambio</div>
-            <h1 class="scene-title">🔧 SOLUCIONES Y CIERRE</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">✅ ¿Cómo superar esta falacia?</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="Aceptar que la única persona a la que realmente podemos cambiar es a nosotros mismos. Los demás solo cambian si ellos quieren.">
-                            <strong>Aceptación radical:</strong> La <strong>única persona</strong> que puedes controlar y cambiar eres <strong>tú mismo</strong>.
-                        </li>
-                        <li class="fact-item" data-info="En lugar de preguntarte '¿Cómo hago para que cambie?', pregúntate '¿Qué puedo hacer YO para estar bien si esta persona no cambia?'.">
-                            <strong>Redirigir el enfoque:</strong> Pregúntate: <strong>"¿Qué puedo hacer YO para estar bien si esta persona no cambia?"</strong>
-                        </li>
-                        <li class="fact-item" data-info="Aceptar no significa tolerar maltratos. Puedes alejarte de quien te lastima. Eso no es 'cambiar al otro', es cuidarte a ti.">
-                            <strong>Poner límites sanos:</strong> Si alguien te lastima, puedes <strong>alejarte</strong>. Eso es cuidarte, no controlar.
-                        </li>
-                    </ul>
-                    <div class="quote-box">
-                        <p style="color: var(--warning);">💡 <strong>Frase clave:</strong></p>
-                        "Considera lo difícil que es cambiarte a ti mismo y entenderás lo poco que puedes esperar cambiar a los demás." <br>— <strong>Arnold Glasow</strong>
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">🗝️</div>
-                                <p style="color: var(--success); font-size:1.2rem;">"La única persona<br>que puedes cambiar<br><strong>eres tú</strong>"</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-display">
-                        <div class="stat"><div class="stat-value">✅</div><div class="stat-label">Aceptar</div></div>
-                        <div class="stat"><div class="stat-value">🎯</div><div class="stat-label">Enfocarme en mí</div></div>
-                        <div class="stat"><div class="stat-value">🚧</div><div class="stat-label">Poner límites</div></div>
-                        <div class="stat"><div class="stat-value">🛡️</div><div class="stat-label">Cuidarme</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════ -->
-        <!-- DIVISOR ENTRE TEMAS (Escena 5)          -->
-        <!-- ═══════════════════════════════════════════ -->
-        <div class="scene" id="scene5">
-            <div class="section-divider">
-                <div class="divider-line"></div>
-                <div class="divider-text">
-                    🏁 FIN DEL TEMA 1 &nbsp;|&nbsp; ▶ INICIO DEL TEMA 2
-                </div>
-            </div>
-            <div style="text-align:center; margin-top:2rem; color: var(--light);">
-                <!-- <p style="font-size:1.3rem;">Hemos terminado con <span style="color: var(--primary);">Falacia de Cambio</span>.</p>
-                <p style="font-size:1.1rem; margin-top:0.5rem;">Ahora pasamos a la segunda distorsión:</p> -->
-                <p style="font-size:2rem; margin-top:1rem; color: var(--accent); font-weight: bold;">🏷️ Etiquetas Globales</p>
-                <p style="margin-top:1rem; color: var(--warning);">(También conocida como "Etiquetado" o "Global Labeling")</p>
-                <!-- <p style="margin-top:2rem; font-size:0.9rem; color: #aaa;">Usa las flechas o los indicadores para continuar →</p> -->
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════ -->
-        <!-- TEMA 2: ETIQUETAS GLOBALES (Escenas 6-9) -->
-        <!-- ═══════════════════════════════════════════ -->
-
-        <!-- SCENE 6: Definición de Etiquetas Globales -->
-        <div class="scene" id="scene6">
-            <div class="theme-badge badge-etiquetas">Tema 2 · Distorsión Cognitiva</div>
-            <h1 class="scene-title">🏷️ ETIQUETAS GLOBALES</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">📖 ¿Qué son las etiquetas globales?</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="El etiquetado global es otra distorsión cognitiva identificada por Aaron Beck. Consiste en asignar una etiqueta negativa, general y permanente a toda la persona basándose en un solo comportamiento o error.">
-                            <strong>Definición:</strong> Asignar una <strong>etiqueta negativa, global y permanente</strong> a una persona (incluyéndonos a nosotros) basándose en <strong>un solo error o característica</strong>.
-                        </li>
-                        <li class="fact-item" data-info="En lugar de describir una conducta específica ('hoy me equivoqué'), hacemos un juicio total sobre la identidad ('soy un inútil'). Es pasar del verbo HACER al verbo SER.">
-                            En lugar de describir una conducta (<strong>"Hoy me equivoqué"</strong>), juzgamos toda la identidad (<strong>"Soy un inútil"</strong>).
-                        </li>
-                        <li class="fact-item" data-info="Convertimos un comportamiento puntual y específico en una cualidad permanente y definitoria de la personalidad de alguien.">
-                            Convertimos un <strong>comportamiento puntual</strong> en una <strong>cualidad permanente</strong> de la personalidad.
-                        </li>
-                        <li class="fact-item" data-info="Las etiquetas pueden ser hacia uno mismo (autoetiquetas: 'soy un fracaso') o hacia los demás (heteroetiquetas: 'es un idiota'). Ambas son igual de dañinas.">
-                            Pueden ser <strong>hacia uno mismo</strong> (autoetiquetas) o <strong>hacia los demás</strong> (heteroetiquetas).
-                        </li>
-                    </ul>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">🏷️</div>
-                                <p style="color: var(--accent); font-size:1.1rem;">"Una acción NO define<br>a toda una persona"</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-display">
-                        <div class="stat"><div class="stat-value">🏷️</div><div class="stat-label">Etiqueta global</div></div>
-                        <div class="stat"><div class="stat-value">🎭</div><div class="stat-label">Generalización</div></div>
-                        <div class="stat"><div class="stat-value">⚠️</div><div class="stat-label">Permanente</div></div>
-                        <div class="stat"><div class="stat-value">🧠</div><div class="stat-label">Distorsión</div></div>
-                    </div>
-                    <div class="example-box">
-                        <div class="example-title">💭 Ejemplo clave</div>
-                        Reprobé un examen → <span class="danger-text">"Soy un fracaso"</span><br>
-                        <span class="highlight-text">(Error ≠ Identidad)</span>
-                    </div>
-                </div>
-            </div>
-            <div class="interactive-element element-3"><div class="mini-fact">"Soy un desastre" → Autoetiqueta</div></div>
-        </div>
-
-        <!-- SCENE 7: Tipos y ejemplos de etiquetas -->
-        <div class="scene" id="scene7">
-            <div class="theme-badge badge-etiquetas">Tema 2 · Etiquetas Globales</div>
-            <h1 class="scene-title">📌 TIPOS Y EJEMPLOS</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">🔴 Autoetiquetas (hacia uno mismo)</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="Reprobar un examen no te convierte en un fracaso. Significa que necesitas estudiar de forma diferente o que ese día no fue el mejor.">
-                            Repruebo un examen → <strong>"Soy un fracaso."</strong>
-                        </li>
-                        <li class="fact-item" data-info="Cometer un error al hablar en público no te define como torpe. Muchas personas exitosas han tenido malas presentaciones.">
-                            Me equivoco al hablar → <strong>"Soy un torpe / un tonto."</strong>
-                        </li>
-                        <li class="fact-item" data-info="Tener un desacuerdo con tu pareja no significa que seas 'malo para las relaciones'. Es normal discutir a veces.">
-                            Discuto con mi pareja → <strong>"Soy malo para las relaciones."</strong>
-                        </li>
-                    </ul>
-                    <h2 class="panel-title" style="margin-top:1.5rem;">🟠 Heteroetiquetas (hacia otros)</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="Que alguien llegue tarde una vez no lo convierte en irresponsable. Hay que ver el contexto y la frecuencia.">
-                            Un amigo llega tarde → <strong>"Es un irresponsable."</strong>
-                        </li>
-                        <li class="fact-item" data-info="Equivocarse en un pedido no hace que el mesero sea incompetente. Quizá tuvo un mal día o hubo una confusión.">
-                            El mesero se equivoca → <strong>"Este mesero no sirve."</strong>
-                        </li>
-                        <li class="fact-item" data-info="Tener una opinión diferente no hace ignorante a nadie. Es simplemente tener otra perspectiva.">
-                            Alguien opina distinto → <strong>"Es un ignorante."</strong>
-                        </li>
-                    </ul>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">🗣️</div>
-                                <p style="color: var(--danger); font-size:1rem;">Etiquetar es reducir<br>a una persona a<br><strong>una sola palabra</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="comparison-container">
-                        <div class="comparison-item">
-                            <h3 class="comparison-title">❌ Etiqueta</h3>
-                            "Eres un flojo"
-                        </div>
-                        <div class="comparison-item">
-                            <h3 class="comparison-title">✅ Descripción</h3>
-                            "Hoy no hiciste tu tarea, me la traes para la proxima"
-                        </div>
-                    </div>
-                    <div class="comparison-container">
-                        <div class="comparison-item">
-                            <h3 class="comparison-title">❌ Etiqueta</h3>
-                            "Soy un desastre"
-                        </div>
-                        <div class="comparison-item">
-                            <h3 class="comparison-title">✅ Descripción</h3>
-                            "Hoy fui desorganizado, sere mas eficiente"
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SCENE 8: Peligros y consecuencias -->
-        <div class="scene" id="scene8">
-            <div class="theme-badge badge-etiquetas">Tema 2 · Etiquetas Globales</div>
-            <h1 class="scene-title">⚠️ PELIGROS DE ETIQUETAR</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">🩹 ¿Por qué es tan peligroso?</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="Cuando te etiquetas como 'fracasado', 'feo' o 'inútil', tu cerebro activa el sesgo de confirmación y busca activamente pruebas que validen esa etiqueta, ignorando toda evidencia en contra.">
-                            <strong>Baja autoestima:</strong> Si te etiquetas como <strong>"fracasado"</strong>, tu cerebro buscará <strong>pruebas para confirmarlo</strong>, ignorando tus logros.
-                        </li>
-                        <li class="fact-item" data-info="Al etiquetar a otros como 'flojos', 'agresivos' o 'irresponsables', dejas de ver a la persona completa. Cada pequeño error 'confirma' tu prejuicio.">
-                            <strong>Prejuicios rígidos:</strong> Dejas de ver a la persona real. Solo ves la etiqueta. <strong>Cada error la "confirma"</strong>.
-                        </li>
-                        <li class="fact-item" data-info="Nos enfadamos mucho más cuando pensamos '¡Es un idiota!' que cuando pensamos 'Tomó una mala decisión'. La etiqueta intensifica la emoción negativa.">
-                            <strong>Estrés e irritabilidad:</strong> La emoción negativa es <strong>mucho más intensa</strong> con una etiqueta que con una descripción.
-                        </li>
-                        <li class="fact-item" data-info="Al etiquetar a alguien, dejamos de intentar comprenderlo. 'Es un flojo' cierra la conversación. No hay espacio para el diálogo.">
-                            <strong>Comunicación bloqueada:</strong> Las etiquetas <strong>cierran el diálogo</strong> y generan conflicto.
-                        </li>
-                    </ul>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">💥</div>
-                                <p style="color: var(--danger); font-size:1.1rem;">"Las etiquetas<br>son como cadenas<br>que atan la mente"</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-display">
-                        <div class="stat"><div class="stat-value">📉</div><div class="stat-label">Autoestima baja</div></div>
-                        <div class="stat"><div class="stat-value">🔒</div><div class="stat-label">Prejuicios</div></div>
-                        <div class="stat"><div class="stat-value">😠</div><div class="stat-label">Irritabilidad</div></div>
-                        <div class="stat"><div class="stat-value">🚫</div><div class="stat-label">Sin diálogo</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SCENE 9: Soluciones y cierre Tema 2 -->
-        <div class="scene" id="scene9">
-            <div class="theme-badge badge-etiquetas">Tema 2 · Etiquetas Globales</div>
-            <h1 class="scene-title">🩺 SOLUCIONES Y CONCLUSIÓN</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">✅ ¿Cómo dejar de etiquetar?</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="En lugar de decir 'Soy' (identidad), di 'Hoy hice' o 'Esta vez actué' (conducta). Separa el verbo HACER del verbo SER.">
-                            <strong>Separar acción de identidad:</strong> Distingue entre lo que alguien <strong>HACE</strong> y lo que <strong>ES</strong>. "Hoy actué mal" ≠ "Soy malo".
-                        </li>
-                        <li class="fact-item" data-info="Describe el comportamiento con palabras objetivas, no con juicios. Di 'Llegó 10 minutos tarde', no 'Es un impuntual'.">
-                            <strong>Usar lenguaje descriptivo:</strong> Describe el hecho, no a la persona. "Llegó tarde" en lugar de "Es un irresponsable".
-                        </li>
-                        <li class="fact-item" data-info="Cuando aparezca una autoetiqueta, busca activamente evidencia que la contradiga. Si piensas 'Soy un fracaso', pregúntate: '¿En qué cosas SÍ he tenido éxito?'.">
-                            <strong>Buscar evidencia contraria:</strong> Si piensas <strong>"Soy un fracaso"</strong>, pregúntate: <strong>"¿En qué SÍ he tenido éxito?"</strong>
-                        </li>
-                    </ul>
-                    <div class="quote-box">
-                        <p style="color: var(--success);">💡 <strong>Recuerda:</strong></p>
-                        "En vez de <span class="danger-text">'Soy un desastre'</span> → <span class="highlight-text">'Hoy fui desorganizado, pero puedo mejorar mañana'</span>"
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">🌟</div>
-                                <p style="color: var(--success); font-size:1.2rem;">"Juzga acciones,<br><strong>no personas</strong>"</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-display">
-                        <div class="stat"><div class="stat-value">🔀</div><div class="stat-label">Separar HACER de SER</div></div>
-                        <div class="stat"><div class="stat-value">📝</div><div class="stat-label">Lenguaje descriptivo</div></div>
-                        <div class="stat"><div class="stat-value">🔍</div><div class="stat-label">Buscar evidencia</div></div>
-                        <div class="stat"><div class="stat-value">💬</div><div class="stat-label">"Hoy fue difícil"</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SCENE 10: Conclusión final de ambos temas -->
-        <div class="scene" id="scene10">
-            <h1 class="scene-title">🎯 CONCLUSIÓN FINAL</h1>
-            <div class="content-grid">
-                <div class="info-panel" style="transition-delay:0.2s">
-                    <h2 class="panel-title">📌 Puntos clave</h2>
-                    <ul class="fact-list">
-                        <li class="fact-item" data-info="Falacia de Cambio: La única persona que podemos controlar y cambiar somos nosotros mismos. Aceptar a los demás como son nos libera.">
-                            <strong>🔄 Falacia de Cambio:</strong> La <strong>única persona</strong> que puedes controlar eres <strong>tú</strong>. Acepta a los demás o aléjate.
-                        </li>
-                        <li class="fact-item" data-info="Etiquetas Globales: Una acción no define a una persona. Hay que distinguir entre lo que alguien hace y lo que es.">
-                            <strong>🏷️ Etiquetas Globales:</strong> Distingue entre <strong>HACER</strong> y <strong>SER</strong>. Juzga acciones, no personas.
-                        </li>
-                        <li class="fact-item" data-info="Ambas distorsiones nos alejan de la realidad y nos generan sufrimiento. Reconocerlas es el primer paso para cambiarlas.">
-                            Ambas distorsiones nos <strong>desconectan de la realidad</strong> y nos hacen sufrir innecesariamente.
-                        </li>
-                        <li class="fact-item" data-info="La clave está en ser más flexibles y compasivos con nosotros mismos y con los demás. Trabajar en lo que sí está bajo nuestro control.">
-                            La clave: <strong>flexibilidad, compasión</strong> y trabajar en lo que <strong>sí está bajo nuestro control</strong>.
-                        </li>
-                    </ul>
-                </div>
-                <div class="visualization">
-                    <div class="model-card">
-                        <div class="model-inner">
-                            <div class="img-placeholder">
-                                <div class="model-icon">🧠✨</div>
-                                <p style="color: var(--success); font-size:1.2rem;">Piensa mejor<br><strong>Vive mejor</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-display">
-                        <div class="stat"><div class="stat-value">🔄</div><div class="stat-label">Aceptar</div></div>
-                        <div class="stat"><div class="stat-value">🏷️</div><div class="stat-label">Describir</div></div>
-                        <div class="stat"><div class="stat-value">🎯</div><div class="stat-label">Enfocar</div></div>
-                        <div class="stat"><div class="stat-value">🌟</div><div class="stat-label">Crecer</div></div>
-                    </div>
-                    <div class="quote-box" style="margin-top:1rem;">
-                        <p style="color: var(--warning);">💡 <strong>Mensaje final:</strong></p>
-                        "Tanto la <span style="color: var(--primary);">Falacia de Cambio</span> como las <span style="color: var(--accent);">Etiquetas Globales</span> nos hacen prisioneros de expectativas irreales. La libertad está en <strong>aceptar, describir y enfocarnos en nosotros mismos</strong>."
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <div class="navigation-3d">
-        <button class="nav-btn" id="prev-btn" title="Anterior"></button>
-        <button class="nav-btn" id="next-btn" title="Siguiente"></button>
-    </div>
-    <div class="scene-indicators">
-        <div class="scene-indicator active" data-scene="0" data-title="Falacia: Definición"></div>
-        <div class="scene-indicator" data-scene="1" data-title="Falacia: Ejemplos"></div>
-        <div class="scene-indicator" data-scene="2" data-title="Falacia: Consecuencias"></div>
-        <div class="scene-indicator" data-scene="3" data-title="Falacia: Solución"></div>
-        <div class="scene-indicator divider-indicator" data-scene="4" data-title="⬇ CAMBIO DE TEMA ⬇"></div>
-        <div class="scene-indicator" data-scene="5" data-title="Etiquetas: Definición"></div>
-        <div class="scene-indicator" data-scene="6" data-title="Etiquetas: Tipos y ejemplos"></div>
-        <div class="scene-indicator" data-scene="7" data-title="Etiquetas: Peligros"></div>
-        <div class="scene-indicator" data-scene="8" data-title="Etiquetas: Solución"></div>
-        <div class="scene-indicator" data-scene="9" data-title="Conclusión Final"></div>
     </div>
 
     <script>
-        (function() {
-            const scenes = document.querySelectorAll('.scene');
-            const indicators = document.querySelectorAll('.scene-indicator');
-            const prev = document.getElementById('prev-btn');
-            const next = document.getElementById('next-btn');
-            let current = 0;
-            const totalScenes = scenes.length;
+        const idiomsData = [
+            {
+                idiom: "A leopard cannot change its spots",
+                emoji: "🐆",
+                literal: "(escoge la respuesta que crees que sea la correcta)",
+                correct: "Genio y figura hasta la sepultura",
+                wrong: [
+                    "Más vale prevenir que lamentar",
+                    "El que mucho abarca poco aprieta",
+                    "A caballo regalado no se le miran los dientes",
+                    "Camarón que se duerme se lo lleva la corriente"
+                ]
+            },
+            {
+                idiom: "A blessing in disguise",
+                emoji: "🎭",
+                literal: "(escoge la respuesta que crees que sea la correcta)",
+                correct: "No hay mal que por bien no venga",
+                wrong: [
+                    "Dime con quién andas y te diré quién eres",
+                    "El que ríe al último ríe mejor",
+                    "Ojos que no ven, corazón que no siente",
+                    "Del dicho al hecho hay mucho trecho"
+                ]
+            },
+            {
+                idiom: "A fool and his money are soon parted",
+                emoji: "💰",
+                literal: "(escoge la respuesta que crees que sea la correcta)",
+                correct: "Lo que fácil viene, fácil se va",
+                wrong: [
+                    "Dinero llama dinero",
+                    "El dinero no da la felicidad",
+                    "Tanto tienes, tanto vales",
+                    "Lo barato sale caro"
+                ]
+            },
+            {
+                idiom: "A pig with lipstick, is still a pig",
+                emoji: "🐷",
+                literal: "(escoge la respuesta que crees que sea la correcta)",
+                correct: "Aunque la mona se vista de seda, mona se queda",
+                wrong: [
+                    "Más sabe el diablo por viejo que por diablo",
+                    "No todo lo que brilla es oro",
+                    "Zapatero a tus zapatos",
+                    "De tal palo, tal astilla"
+                ]
+            },
+            {
+                idiom: "A man's home is his castle",
+                emoji: "👑",
+                literal: "(escoge la respuesta que crees que sea la correcta)",
+                correct: "Mientras que en mi casa estoy, rey soy",
+                wrong: [
+                    "El que tiene tienda que la atienda",
+                    "El que persevera alcanza",
+                    "Donde manda capitán no gobierna marinero",
+                    "Más vale solo que mal acompañado"
+                ]
+            }
+        ];
 
-            // Modal
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            const modalText = modal.querySelector('.modal-text');
-            const closeModal = document.getElementById('modalClose');
+        let currentQuestion = 0;
+        let score = 0;
+        let attemptsInQuestion = 0;
+        let maxAttempts = 4;
+        let userAnswers = [];
 
-            function changeScene(index) {
-                if (index < 0 || index >= totalScenes) return;
+        function startGame() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            switchScreen('startScreen', 'questionScreen');
+            loadQuestion();
+        }
 
-                scenes.forEach(s => s.classList.remove('active'));
-                indicators.forEach(i => i.classList.remove('active'));
+        function switchScreen(fromId, toId) {
+            document.getElementById(fromId).classList.remove('active');
+            document.getElementById(toId).classList.add('active');
+        }
 
-                scenes[index].classList.add('active');
-                if (indicators[index]) {
-                    indicators[index].classList.add('active');
-                }
-                current = index;
-
-                // Scroll to top of the scene
-                scenes[index].scrollTop = 0;
+        function loadQuestion() {
+            if (currentQuestion >= idiomsData.length) {
+                showResults();
+                return;
             }
 
-            prev.addEventListener('click', () => {
-                if (current > 0) changeScene(current - 1);
+            attemptsInQuestion = 0;
+            const data = idiomsData[currentQuestion];
+
+            document.getElementById('progressFill').style.width = `${(currentQuestion / idiomsData.length) * 100}%`;
+            document.getElementById('questionCounter').textContent = `Pregunta ${currentQuestion + 1} de ${idiomsData.length}`;
+            document.getElementById('idiomEmoji').textContent = data.emoji;
+            document.getElementById('idiomText').textContent = data.idiom;
+            document.getElementById('idiomLiteral').textContent = data.literal;
+
+            // Reset del idiom display
+            const idiomDisplay = document.getElementById('idiomDisplay');
+            idiomDisplay.classList.remove('celebrating');
+
+            // Reset dots de intentos
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`dot${i}`);
+                dot.classList.remove('lost');
+            }
+
+            const allOptions = [data.correct, ...data.wrong];
+            const shuffled = shuffleArray([...allOptions]);
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+
+            shuffled.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `
+                    <span class="option-letter">${letters[index]}</span>
+                    <span>${option}</span>
+                `;
+                btn.addEventListener('click', () => selectOption(btn, option, data.correct));
+                optionsGrid.appendChild(btn);
             });
 
-            next.addEventListener('click', () => {
-                if (current < totalScenes - 1) changeScene(current + 1);
-            });
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('feedbackOverlay').classList.remove('show');
+        }
 
-            indicators.forEach((ind, idx) => {
-                ind.addEventListener('click', () => changeScene(idx));
-            });
+        function selectOption(btn, selected, correct) {
+            // Si ya acertó esta pregunta, no permitir más clicks
+            if (btn.classList.contains('correct')) return;
+            // Si esta opción ya fue marcada como incorrecta, no hacer nada
+            if (btn.classList.contains('wrong')) return;
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft' && current > 0) changeScene(current - 1);
-                if (e.key === 'ArrowRight' && current < totalScenes - 1) changeScene(current +
-                    1);
-            });
+            if (selected === correct) {
+                // ¡ACERTÓ!
+                btn.classList.add('correct');
+                score++;
+                userAnswers[currentQuestion] = { correct: true, attempts: attemptsInQuestion + 1 };
 
-            // Hover en fact items muestra info en modal
-            const factItems = document.querySelectorAll('.fact-item');
-            factItems.forEach(item => {
-                item.addEventListener('mouseenter', function() {
-                    const info = this.getAttribute('data-info');
-                    if (info) {
-                        modalImage.style.display = 'none';
-                        modalText.style.display = 'block';
-                        modalText.innerHTML =
-                            `<strong style="color: var(--warning); font-size:1.2rem;">📌 Información adicional</strong><br><br>${info}`;
-                        modal.classList.add('active');
-                    }
-                });
-                item.addEventListener('mouseleave', () => {
-                    modal.classList.remove('active');
-                });
-                
-                // Soporte para touch en móviles
-                item.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    const info = this.getAttribute('data-info');
-                    if (info) {
-                        modalImage.style.display = 'none';
-                        modalText.style.display = 'block';
-                        modalText.innerHTML =
-                            `<strong style="color: var(--warning); font-size:1.2rem;">📌 Información adicional</strong><br><br>${info}`;
-                        modal.classList.add('active');
-                    }
-                });
-            });
+                // Deshabilitar todas las opciones
+                const allOptions = document.querySelectorAll('.option-btn');
+                allOptions.forEach(opt => opt.style.pointerEvents = 'none');
 
-            closeModal.addEventListener('click', () => modal.classList.remove('active'));
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.classList.remove('active');
-            });
+                // Efecto de celebración en el idiom display
+                const idiomDisplay = document.getElementById('idiomDisplay');
+                idiomDisplay.classList.add('celebrating');
 
-            // Elementos flotantes interactivos
-            const interactive = document.querySelectorAll('.interactive-element');
-            interactive.forEach(el => {
-                el.addEventListener('click', function() {
-                    this.style.animation = 'none';
-                    this.style.transform = 'scale(1.4)';
-                    this.style.background = 'rgba(255,107,74,0.7)';
+                // Mostrar feedback de éxito
+                showSuccessFeedback(attemptsInQuestion + 1);
+
+                // Confeti
+                createConfetti();
+                setTimeout(createConfetti, 600);
+
+                // Mostrar botón siguiente
+                const nextBtn = document.getElementById('nextBtn');
+                nextBtn.style.display = 'block';
+                nextBtn.style.animation = 'bounceIn 0.5s';
+
+            } else {
+                // Falló - marcar solo esta opción como incorrecta
+                btn.classList.add('wrong');
+                btn.style.pointerEvents = 'none';
+                attemptsInQuestion++;
+
+                // Actualizar dots de intentos
+                const dot = document.getElementById(`dot${attemptsInQuestion}`);
+                if (dot) dot.classList.add('lost');
+
+                // Mostrar mensaje flotante de incorrecto
+                showFloatingMessage('¡Incorrecto! 😅');
+
+                // Si ya gastó todos los intentos, revelar la correcta
+                if (attemptsInQuestion >= maxAttempts) {
+                    userAnswers[currentQuestion] = { correct: false, attempts: attemptsInQuestion };
+                    const allOptions = document.querySelectorAll('.option-btn');
+                    allOptions.forEach(opt => {
+                        if (opt.querySelector('span:last-child').textContent === correct) {
+                            opt.classList.add('correct');
+                        }
+                        opt.style.pointerEvents = 'none';
+                    });
+
+                    // Mostrar feedback de que se acabaron los intentos
                     setTimeout(() => {
-                        this.style.animation = 'float 5s infinite ease-in-out';
-                        this.style.transform = '';
-                        this.style.background = 'rgba(255, 107, 74, 0.2)';
-                    }, 300);
-                });
+                        showOutOfAttemptsFeedback(correct);
+                    }, 800);
+
+                    // Mostrar botón siguiente
+                    const nextBtn = document.getElementById('nextBtn');
+                    nextBtn.style.display = 'block';
+                    nextBtn.style.animation = 'bounceIn 0.5s';
+                }
+            }
+        }
+
+        function showFloatingMessage(message) {
+            const msg = document.createElement('div');
+            msg.className = 'floating-message';
+            msg.textContent = message;
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 1600);
+        }
+
+        function showSuccessFeedback(attempts) {
+            const overlay = document.getElementById('feedbackOverlay');
+            const emoji = document.getElementById('feedbackEmoji');
+            const text = document.getElementById('feedbackText');
+            const attemptsText = document.getElementById('feedbackAttempts');
+
+            const emojis = ['🎯', '👑', '🌟', '🔥'];
+            emoji.textContent = emojis[Math.min(attempts - 1, 3)];
+            text.textContent = '¡Correcto!';
+            text.style.color = '#00b894';
+
+            if (attempts === 1) {
+                attemptsText.textContent = '¡A la primera! ¡Impresionante!';
+            } else if (attempts === 2) {
+                attemptsText.textContent = '¡Bien! Solo necesitaste 2 intentos';
+            } else if (attempts === 3) {
+                attemptsText.textContent = '¡Lo lograste en 3 intentos!';
+            } else {
+                attemptsText.textContent = '¡Al final lo conseguiste!';
+            }
+
+            overlay.classList.add('show');
+
+            setTimeout(() => {
+                overlay.classList.remove('show');
+            }, 2500);
+        }
+
+        function showOutOfAttemptsFeedback(correct) {
+            const overlay = document.getElementById('feedbackOverlay');
+            const emoji = document.getElementById('feedbackEmoji');
+            const text = document.getElementById('feedbackText');
+            const attemptsText = document.getElementById('feedbackAttempts');
+
+            emoji.textContent = '📚';
+            text.textContent = '¡Se acabaron los intentos!';
+            text.style.color = '#e17055';
+            attemptsText.textContent = `La respuesta correcta es: ${correct}`;
+
+            overlay.classList.add('show');
+
+            setTimeout(() => {
+                overlay.classList.remove('show');
+            }, 3000);
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            document.getElementById('feedbackOverlay').classList.remove('show');
+            loadQuestion();
+            document.getElementById('questionScreen').scrollTop = 0;
+        }
+
+        function showResults() {
+            switchScreen('questionScreen', 'resultsScreen');
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('scoreNumber').textContent = score;
+
+            const percent = (score / idiomsData.length) * 100;
+            document.getElementById('scoreCircle').style.background =
+                `conic-gradient(var(--success) ${percent * 3.6}deg, rgba(255,255,255,0.1) 0)`;
+
+            const messages = [
+                '¡Sigue practicando! Los idioms son difíciles. 📚',
+                '¡Vas por buen camino! 💪',
+                '¡Buen trabajo! Conoces varios idioms. 🌟',
+                '¡Muy bien! Casi los dominas todos. 🔥',
+                '¡Excelente! 👑',
+                '¡PERFECTO! ¡Los sabes todos! 🏆'
+            ];
+            document.getElementById('resultsMessage').textContent = messages[score];
+
+            const detail = document.getElementById('resultsDetail');
+            detail.innerHTML = '';
+            idiomsData.forEach((data, index) => {
+                const userAnswer = userAnswers[index];
+                const icon = userAnswer && userAnswer.correct ? '✅' : '❌';
+                const attempts = userAnswer ? userAnswer.attempts : '-';
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.innerHTML = `
+                    <span class="result-icon">${icon}</span>
+                    <span class="result-idiom">${data.emoji} ${data.idiom}</span>
+                    <span class="result-answer">→ ${data.correct}</span>
+                    <span class="result-attempts">${attempts} ${attempts === 1 ? 'intento' : 'intentos'}</span>
+                `;
+                detail.appendChild(item);
             });
 
-            // Soporte mejorado para swipe en móviles
-            let touchStartX = 0;
-            let touchStartY = 0;
-            let touchEndX = 0;
-            let touchEndY = 0;
+            if (score >= 4) {
+                setTimeout(createConfetti, 500);
+                setTimeout(createConfetti, 1000);
+            }
+        }
 
-            document.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-                touchStartY = e.changedTouches[0].screenY;
-            }, { passive: true });
+        function restartGame() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            document.getElementById('progressFill').style.width = '0%';
+            switchScreen('resultsScreen', 'questionScreen');
+            loadQuestion();
+        }
 
-            document.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                touchEndY = e.changedTouches[0].screenY;
-                
-                const diffX = touchStartX - touchEndX;
-                const diffY = touchStartY - touchEndY;
-                
-                // Solo swipe horizontal si es más pronunciado que vertical
-                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-                    if (diffX > 0 && current < totalScenes - 1) {
-                        changeScene(current + 1);
-                    } else if (diffX < 0 && current > 0) {
-                        changeScene(current - 1);
-                    }
-                }
-            });
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
 
-            // Prevenir zoom en doble tap
-            document.addEventListener('dblclick', function(e) {
-                if (e.target.closest('.nav-btn') || e.target.closest('.scene-indicator')) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = [
+                '#6c5ce7', '#00cec9', '#fdcb6e', '#fd79a8',
+                '#00b894', '#e17055', '#a29bfe', '#55efc4',
+                '#ff7675', '#74b9ff', '#ffeaa7', '#fab1a0'
+            ];
 
-            console.log('✅ Presentación lista: Falacia de Cambio + Etiquetas Globales');
-            console.log('📌 Temas: 2 | Escenas: 10 | Navegación: Flechas, indicadores o teclado');
-            console.log('💡 Pasa el cursor sobre los items para ver más información');
-            console.log('📱 Versión responsive mejorada para móviles');
-        })();
+            for (let i = 0; i < 70; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.top = -(Math.random() * 30 + 10) + 'px';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (Math.random() * 2.5 + 2.5) + 's';
+                piece.style.animationDelay = Math.random() * 0.8 + 's';
+                const size = Math.random() * 10 + 8;
+                piece.style.width = size + 'px';
+                piece.style.height = size + 'px';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+                piece.style.opacity = Math.random() * 0.7 + 0.3;
+                container.appendChild(piece);
+                setTimeout(() => piece.remove(), 4000);
+            }
+        }
+
+        console.log('🎯 English Idioms Game - ¡Listo para jugar!');
+        console.log('📌 5 idioms desafiantes');
+        console.log('🔄 Puedes intentar hasta 4 veces por pregunta');
+        console.log('✅ Solo al acertar: confeti + celebración');
+        console.log('❌ Incorrectas se acumulan en rojo');
     </script>
 </body>
 </html>
